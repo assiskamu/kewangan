@@ -1,232 +1,850 @@
-Anda ialah jurutera front-end kanan. Cipta aplikasi web satu fail dalam HTML/CSS/JavaScript sahaja bernama `index.html` untuk “Pencipta Penyata Kewangan Kelab” bagi pengurusan kelab staf, kelab pelajar, dan komuniti. Aplikasi mesti sangat mesra pengguna telefon dan pengguna bukan teknikal.
+<!-- halaman -->
+<main id="kandungan">
+  <!-- UTAMA -->
+  <section id="halaman-utama" class="grid">
+    <div class="kad">
+      <div class="tajuk-kad">
+        <h2>Utama</h2>
+        <div class="status-simpan" aria-live="polite">
+          <span class="titik" id="titikSimpan" aria-hidden="true"></span>
+          <span id="teksSimpan">Memuatkan...</span>
+        </div>
+      </div>
+      <div class="isi-kad">
+        <div class="baris" style="justify-content:space-between;">
+          <div class="baris baris-rapat">
+            <span class="tag" id="tagTempohSemasa">Tempoh Semasa: Tiada</span>
+            <span class="tag" id="tagPeranan">Paparan: Bendahari</span>
+          </div>
 
-PERATURAN OUTPUT (WAJIB):
-1) Keluarkan HANYA kandungan penuh `index.html` (tiada penerangan, tiada markdown fences).
-2) Berfungsi OFFLINE (tiada perpustakaan luaran, tiada CDN, tiada panggilan rangkaian).
-3) Semua teks UI, label, butang, mesej ralat, tooltip, bantuan, dan istilah mesti 100% Bahasa Malaysia (BM).
-4) Simpan data automatik (localStorage) dan paparkan status “Disimpan” / “Perubahan belum disimpan”.
-5) Mesti stabil: jangan crash bila data kosong atau import gagal; tunjuk keadaan “Tiada data” dan ralat yang membimbing.
+          <div class="baris baris-rapat">
+            <label class="medan pilih-tempoh">
+              <span>Tempoh Laporan</span>
+              <select class="pilih-kecil" id="pilihTempohSemasa" aria-label="Pilih Tempoh Laporan Semasa"></select>
+            </label>
+          </div>
+        </div>
 
-BAHASA & ISTILAH (WAJIB DAN KONSISTEN):
-- Jangan guna istilah Inggeris seperti Dashboard/Settings/Filter/Search/Print/Export/Import/Cash/Bank/Undo.
-- Gunakan istilah BM berikut di seluruh aplikasi:
-  - “Utama” (bukan Dashboard)
-  - “Tetapan”
-  - “Carian”
-  - “Penapis”
-  - “Cetak”
-  - “Eksport” / “Import”
-  - “Tunai” / “Bank”
-  - “Akaun/Kategori”
-  - “Penyata Pendapatan (Untung Rugi)”
-  - “Penyata Kedudukan Kewangan”
-  - “Ringkasan Aliran Tunai”
-  - “Surplus/Defisit Bersih”
-  - “Tempoh Laporan”
-  - “Buat Asal” (Undo)
-- Gunakan nombor, tarikh, dan format RM yang jelas (contoh: RM 1,234.50) mengikut tetapan perpuluhan.
+        <div class="ruang"></div>
 
-MODEL PERAKAUNAN:
-- Mata wang: RM (Ringgit Malaysia).
-- Kaedah: SINGLE-ENTRY (setiap transaksi dipadankan kepada satu akaun/kategori + kaedah bayaran Tunai/Bank).
-- Simpan amaun sebagai nombor; tarikh sebagai ISO (YYYY-MM-DD).
+        <div class="kpi" id="kpiUtama">
+          <div class="kotak">
+            <div class="label">Jumlah Pendapatan</div>
+            <div class="nilai" id="kpiPendapatan">RM 0</div>
+          </div>
+          <div class="kotak">
+            <div class="label">Jumlah Perbelanjaan</div>
+            <div class="nilai" id="kpiPerbelanjaan">RM 0</div>
+          </div>
+          <div class="kotak">
+            <div class="label">Surplus/Defisit Bersih <span class="info" id="infoSurplus" title="Surplus = Pendapatan lebih daripada perbelanjaan. Defisit = Perbelanjaan lebih daripada pendapatan.">i</span></div>
+            <div class="nilai" id="kpiSurplus">RM 0</div>
+          </div>
+          <div class="kotak">
+            <div class="label">Baki Tunai</div>
+            <div class="nilai" id="kpiTunai">RM 0</div>
+          </div>
+          <div class="kotak">
+            <div class="label">Baki Bank</div>
+            <div class="nilai" id="kpiBank">RM 0</div>
+          </div>
+        </div>
 
-REKA BENTUK & TEMA (WAJIB):
-- Reka bentuk mobile-first, moden, ringkas, kemas, dan konsisten.
-- Gunakan CSS variables untuk tema warna (tanpa framework).
-- Sediakan tema:
-  1) Tema Cerah (default)
-  2) Tema Gelap
-  3) Tema Neutral
-  4) Mod Kontras Tinggi (aksesibiliti) — boleh mengatasi tema lain bila diaktifkan
-- Pastikan kontras teks jelas di semua tema.
-- Jangan bergantung pada warna sahaja untuk makna (guna ikon/label/bentuk).
-- Gaya komponen:
-  - Kad (card) dengan bayang lembut, sudut bulat, ruang putih mencukupi
-  - Butang utama lebih menonjol, butang sekunder neutral
-  - Input besar dan mudah ditekan (terutama bila “Jarak Sentuhan: Besar”)
-  - Jadual di desktop, kad di telefon
-- Jika perlu ikon, guna SVG inline ringkas (tanpa library) untuk konsistensi.
-- Tetapan tema dalam “Tetapan”:
-  - Pilih “Tema: Cerah / Gelap / Neutral”
-  - Toggle “Kontras Tinggi”
-  - Simpan pilihan tema dalam localStorage
+        <div class="ruang"></div>
 
-FOOTER & HAK CIPTA (WAJIB):
-- Letak footer di bahagian bawah aplikasi (bukan modal), dalam BM:
-  - “© <tahun semasa> Assis Kamu UMS. Hak cipta terpelihara.”
-- Tahun semasa dijana automatik melalui JavaScript (bukan hardcode).
+        <div class="baris">
+          <button class="butang butang-utama" id="btnTambahTransaksiUtama" type="button">
+            <span class="ikon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </span>
+            Tambah Transaksi
+          </button>
 
-CETAK (WAJIB):
-- Gaya cetak kemas:
-  - Tajuk laporan + nama kelab + tempoh laporan + tarikh cetak
-  - Buang elemen navigasi/butang semasa cetak
-  - Pastikan jadual laporan muat halaman (font dan margin sesuai)
-- Sertakan footer cetak dengan:
-  - “© <tahun semasa> Assis Kamu UMS”
+          <button class="butang" id="btnLihatLaporanUtama" type="button">
+            <span class="ikon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M4 4h16v16H4z" stroke="currentColor" stroke-width="2"/><path d="M7 14h3v3H7zM11 10h3v7h-3zM15 7h3v10h-3z" fill="currentColor" opacity=".25"/><path d="M7 14h3v3H7zM11 10h3v7h-3zM15 7h3v10h-3z" stroke="currentColor" stroke-width="2"/></svg>
+            </span>
+            Lihat Laporan
+          </button>
 
-REKA BENTUK UI (SANGAT MESRA PENGGUNA, DEFAULT RINGKAS):
-- Aplikasi mesti bermula dalam “Mod Ringkas” supaya bila masuk terus nampak mudah.
-- Sediakan toggle global: “Mod Ringkas / Mod Lanjutan”.
-- Navigasi mesra telefon:
-  - Skrin kecil: navigasi bawah (butang besar) dengan 4 menu sahaja: “Utama | Transaksi | Laporan | Tetapan”.
-  - Skrin besar: boleh guna tab atas tetapi kekalkan menu yang sama.
-- Gunakan bahagian boleh lipat (accordion/collapse) secara meluas supaya skrin tidak semak:
-  - Dalam “Transaksi”: “Penapis Lanjutan” collapsed secara lalai.
-  - Dalam “Laporan”: “Pecahan Bulanan” dan “Perbandingan Multi-Tahun” collapsed secara lalai.
-  - Dalam “Tetapan”: “Aksesibiliti”, “Sandaran & Kongsi”, “Tetapan Lanjutan” collapsed secara lalai.
-- Accordion mesti ada ARIA yang betul (aria-expanded, aria-controls) dan boleh dikawal dengan papan kekunci.
+          <button class="butang" id="btnSandarUtama" type="button">
+            <span class="ikon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M7 8l5-5 5 5M12 3v12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 21h14a2 2 0 0 0 2-2v-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M3 14v5a2 2 0 0 0 2 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </span>
+            Sandarkan/Kongsi
+          </button>
+        </div>
 
-AKSESIBILITI & KOMUNITI (WAJIB):
-- Tetapan “Kontras Tinggi” (On/Off).
-- Tetapan “Mesra Buta Warna” (jangan bergantung pada warna sahaja; carta ada label nilai dan corak/garis berbeza).
-- Tetapan “Saiz Fon”: Normal / Besar / Sangat Besar (guna CSS variables).
-- Tetapan “Jarak Sentuhan”: Normal / Besar (tinggi input/butang dan padding lebih besar).
-- Tetapan “Kurangkan Animasi” (ikut prefers-reduced-motion + toggle manual).
-- Input amaun guna `inputmode="decimal"` dan validasi nombor yang mesra pengguna.
+        <div class="pembahagi"></div>
 
-PANDUAN MUDAH (WAJIB):
-- Wizard “Panduan Cepat” kali pertama (boleh diulang dari Bantuan):
-  1) Cipta Tempoh Laporan
-  2) Sediakan Akaun (import akaun contoh)
-  3) Masukkan Transaksi
-  4) Semak Laporan dan Cetak/Kongsi
-- Sediakan “Mod Latihan” (demo) yang tidak menjejaskan data sebenar:
-  - Bila aktif, guna dataset sementara (in-memory) + banner “MOD LATIHAN”.
-  - Butang “Keluar Mod Latihan”.
-- Sertakan glosari mini BM (boleh buka/tutup) untuk istilah: Pendapatan, Perbelanjaan, Surplus, Defisit, Tempoh Laporan, Tunai, Bank.
+        <div class="baris" style="justify-content:space-between;">
+          <h3 style="margin:0; font-size:1rem; font-weight:900;">Transaksi Terkini</h3>
+          <span class="kapsyen" id="kapsyenTerkini">10 terakhir bagi tempoh semasa</span>
+        </div>
 
-ANTI-SILAP & PEMULIHAN (WAJIB):
-- “Buat Asal” untuk tindakan padam (akaun/transaksi) sekurang-kurangnya 10 saat (toast + butang).
-- Simpan snapshot automatik (contoh 3 versi) untuk pemulihan selepas import/tersilap.
-- “Set Semula Semua Data” memerlukan pengesahan taip “RESET”.
+        <div class="ruang"></div>
 
-DATA & MODUL TERAS:
-1) Profil Kelab:
-- Nama Kelab
-- No. Pendaftaran (opsyenal)
-- Disediakan oleh (Nama) dan Jawatan
-- Paparkan di header bersama Tempoh Laporan Semasa
+        <div id="senaraiTerkini" class="senarai-kad"></div>
+        <div id="tiadaTerkini" class="bantuan">Tiada transaksi untuk dipaparkan.</div>
+      </div>
+    </div>
 
-2) Tempoh Laporan:
-- Tambah/ubah/padam tempoh dengan label (cth: 2023, 2024, 2025) + tarikh mula/tamat
-- Tetapkan “Tempoh Semasa”
-- Tetapan baki awal mengikut tempoh:
-  - Baki Awal Tunai (RM)
-  - Baki Awal Bank (RM)
+    <div class="accordion">
+      <button class="acc-tajuk" type="button" aria-expanded="false" aria-controls="accPanduanCepat" id="btnAccPanduanCepat">
+        <span class="acc-kiri">
+          <span>Panduan Cepat</span>
+          <div class="acc-sub">4 langkah mudah untuk mula guna</div>
+        </span>
+        <svg class="acc-ikon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="acc-kandungan" id="accPanduanCepat" data-buka="tidak">
+        <ol style="margin:0; padding-left: 18px;">
+          <li><b>Cipta Tempoh Laporan</b> (contoh: 2025) di menu <b>Tetapan</b> atau <b>Mod Lanjutan</b> → Tempoh.</li>
+          <li><b>Import Akaun Contoh</b> untuk mula cepat (Pendapatan & Perbelanjaan).</li>
+          <li><b>Masukkan Transaksi</b> (tarikh, amaun, akaun, Tunai/Bank).</li>
+          <li><b>Lihat Laporan</b>, <b>Cetak</b>, atau <b>Sandarkan/Kongsi</b> ringkasan.</li>
+        </ol>
+        <div class="ruang"></div>
+        <div class="baris">
+          <button class="butang butang-utama" id="btnMulakanWizard" type="button">Mulakan Panduan Cepat</button>
+          <button class="butang" id="btnModLatihan" type="button">Aktifkan Mod Latihan</button>
+        </div>
+        <p class="bantuan" style="margin-bottom:0;">Nota: Mod Latihan tidak mengubah data sebenar. Ia sesuai untuk ajar staf/pelajar/komuniti.</p>
+      </div>
+    </div>
+  </section>
 
-3) Carta Akaun:
-- Akaun: id, nama, jenis (Aset/Liabiliti/Ekuiti/Pendapatan/Perbelanjaan), nota opsyenal
-- Tambah/ubah/padam (halang padam jika digunakan oleh transaksi)
-- Carian dan penapis jenis akaun
-- Sediakan “Import Akaun Contoh (BM)” (wajib) yang mengisi akaun seperti:
-  - Pendapatan: Yuran Keahlian, Jualan, Sumbangan, Tajaan
-  - Perbelanjaan: Jamuan, Pengangkutan, Alat Tulis, Sewa, Utiliti, Hadiah
-  - Ekuiti (opsyen): Dana Permulaan, Sumbangan Modal
+  <!-- TRANSAKSI -->
+  <section id="halaman-transaksi" class="grid sembunyi">
+    <div class="kad">
+      <div class="tajuk-kad">
+        <h2>Transaksi</h2>
+        <div class="baris baris-rapat">
+          <button class="butang butang-utama" id="btnTambahTransaksi" type="button">
+            <span class="ikon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </span>
+            Tambah Transaksi
+          </button>
+          <button class="butang butang-separa" id="btnEksportTransaksiCSV" type="button" title="Eksport senarai transaksi (CSV)">
+            <span class="ikon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M7 8l5-5 5 5M12 3v12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 21h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </span>
+            Eksport CSV
+          </button>
+        </div>
+      </div>
+      <div class="isi-kad">
+        <div class="grid" style="gap:10px;">
+          <div class="baris" style="justify-content: space-between;">
+            <label class="medan pilih-tempoh">
+              <span>Tempoh Laporan</span>
+              <select class="pilih-kecil" id="pilihTempohTransaksi"></select>
+            </label>
 
-4) Transaksi (Single-entry):
-- Medan: Tarikh, No. Resit/Rujukan, Butiran, Amaun (RM), Akaun/Kategori, Kaedah Bayaran (Tunai/Bank)
-- Tambah/ubah/padam + pengesahan padam yang jelas
-- Penapis asas (sentiasa nampak): Tempoh Semasa, Carian kata kunci
-- “Penapis Lanjutan” (collapsed): Julat tarikh, jenis akaun, akaun spesifik, kaedah bayaran, susun tarikh
-- Pada skrin kecil, papar transaksi sebagai kad (bukan jadual semata-mata)
-- Papar ringkasan untuk set ditapis: jumlah pendapatan, jumlah perbelanjaan, surplus/defisit
+            <div class="medan" style="max-width: 340px; flex: 1 1 280px;">
+              <label for="carianTransaksi">Carian</label>
+              <input class="input" id="carianTransaksi" placeholder="Contoh: resit 12, jamuan, yuran..." />
+              <div class="bantuan">Carian berdasarkan No. Resit/Rujukan dan Butiran.</div>
+            </div>
 
-PENYATA & LAPORAN (IKUT TEMPOH DIPILIH):
-A) Penyata Pendapatan (Untung Rugi):
-- Jumlah Pendapatan dan Perbelanjaan mengikut akaun
-- Surplus/Defisit Bersih
-- “Pecahan Bulanan” (collapsed) untuk lihat trend bulanan (jika data wujud)
-- Eksport CSV + Cetak
+            <div class="baris baris-rapat" style="justify-content:flex-end;">
+              <span class="tag" id="tagBilTransaksi">Bilangan: 0</span>
+              <span class="tag" id="tagJumlahDitapis">Jumlah Ditapis: RM 0</span>
+            </div>
+          </div>
 
-B) Penyata Kedudukan Kewangan (ringkas, jelaskan batasan single-entry):
-- Kira Tunai dan Bank:
-  - Baki Akhir Tunai = Baki Awal Tunai + (Pendapatan Tunai - Perbelanjaan Tunai + transaksi lain jika jenis akaun bukan pendapatan/perbelanjaan digunakan)
-  - Baki Akhir Bank = Baki Awal Bank + (Pendapatan Bank - Perbelanjaan Bank + transaksi lain)
-- Jika pengguna guna akaun Aset/Liabiliti/Ekuiti, masukkan sebagai baki berdasarkan transaksi kategori tersebut (anggaran single-entry).
-- Papar amaran rekonsiliasi jika Aset != Liabiliti + Ekuiti dan terangkan dalam BM yang mudah.
-- Eksport CSV + Cetak
+          <div class="accordion">
+            <button class="acc-tajuk" type="button" aria-expanded="false" aria-controls="accPenapisLanjutan" id="btnAccPenapis">
+              <span class="acc-kiri">
+                <span>Penapis Lanjutan</span>
+                <div class="acc-sub">Julat tarikh, akaun, jenis akaun, Tunai/Bank</div>
+              </span>
+              <svg class="acc-ikon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="acc-kandungan" id="accPenapisLanjutan" data-buka="tidak">
+              <div class="grid" style="grid-template-columns: 1fr; gap: 10px;">
+                <div class="baris" style="align-items:flex-end;">
+                  <div class="medan" style="flex: 1 1 180px; max-width: 260px;">
+                    <label for="tarikhMula">Tarikh Mula</label>
+                    <input class="input" id="tarikhMula" type="date" />
+                  </div>
+                  <div class="medan" style="flex: 1 1 180px; max-width: 260px;">
+                    <label for="tarikhTamat">Tarikh Tamat</label>
+                    <input class="input" id="tarikhTamat" type="date" />
+                  </div>
 
-C) Ringkasan Aliran Tunai (mudah):
-- Inflow/Outflow mengikut Tunai/Bank dan mengikut jenis akaun
-- Perubahan bersih dan baki akhir Tunai/Bank
-- Eksport CSV + Cetak
+                  <div class="medan" style="flex: 1 1 180px; max-width: 260px;">
+                    <label for="pilihJenisAkaun">Jenis Akaun</label>
+                    <select class="input" id="pilihJenisAkaun">
+                      <option value="">Semua</option>
+                      <option value="Aset">Aset</option>
+                      <option value="Liabiliti">Liabiliti</option>
+                      <option value="Ekuiti">Ekuiti</option>
+                      <option value="Pendapatan">Pendapatan</option>
+                      <option value="Perbelanjaan">Perbelanjaan</option>
+                    </select>
+                  </div>
 
-PERBANDINGAN MULTI-TAHUN (WAJIB):
-- Dalam menu “Laporan”, sediakan seksyen “Perbandingan Multi-Tahun” (collapsed secara lalai).
-- Pengguna boleh pilih 2–5 Tempoh Laporan untuk dibandingkan.
-- Papar jadual sebelah-menyebelah:
-  - Jumlah Pendapatan, Jumlah Perbelanjaan, Surplus/Defisit Bersih bagi setiap tempoh
-- Carta trend tanpa perpustakaan:
-  - Guna `<canvas>` + JS vanilla
-  - Carta 1: Surplus/Defisit Bersih mengikut tempoh
-  - Carta 2: Pendapatan vs Perbelanjaan mengikut tempoh
-  - Pastikan mesra buta warna: label nilai dan corak/garis berbeza
-- Toggle “Peratus (Common-size)”:
-  - Perbelanjaan mengikut akaun sebagai % daripada jumlah pendapatan bagi setiap tempoh
-- Eksport CSV untuk jadual perbandingan
+                  <div class="medan" style="flex: 1 1 220px; min-width: 220px;">
+                    <label for="pilihAkaun">Akaun/Kategori</label>
+                    <select class="input" id="pilihAkaun"></select>
+                  </div>
 
-UTAMA (WAJIB RINGKAS):
-- Paparkan 3 butang besar: “Tambah Transaksi”, “Lihat Laporan”, “Sandarkan/Kongsi”
-- Ringkasan KPI tempoh semasa: Jumlah Pendapatan, Jumlah Perbelanjaan, Surplus/Defisit Bersih, Baki Tunai, Baki Bank, Bilangan Transaksi
-- Senarai “Transaksi Terkini” (10 terakhir)
+                  <div class="medan" style="flex: 1 1 180px; max-width: 220px;">
+                    <label for="pilihKaedah">Kaedah Bayaran</label>
+                    <select class="input" id="pilihKaedah">
+                      <option value="">Semua</option>
+                      <option value="Tunai">Tunai</option>
+                      <option value="Bank">Bank</option>
+                    </select>
+                  </div>
 
-TETAPAN (WAJIB):
-- Simbol mata wang default “RM” (boleh ubah, tetapi praisi RM)
-- Perpuluhan: 0 atau 2
-- Pilihan jenis pengguna (paparan sahaja, tanpa login):
-  - “Bendahari” (penuh)
-  - “AJK” (kurang fungsi padam)
-  - “Ahli/Pelajar” (fokus lihat laporan, transaksi terhad)
-- Aksesibiliti: Kontras Tinggi, Mesra Buta Warna, Saiz Fon, Jarak Sentuhan, Kurangkan Animasi
-- Tetapan tema: Cerah/Gelap/Neutral + Kontras Tinggi
+                  <div class="medan" style="flex: 1 1 180px; max-width: 220px;">
+                    <label for="susunTarikh">Susun Tarikh</label>
+                    <select class="input" id="susunTarikh">
+                      <option value="menaik">Menaik</option>
+                      <option value="menurun">Menurun</option>
+                    </select>
+                  </div>
 
-SANDARAN & KONGSI (WAJIB):
-1) “Sandarkan Sekarang” (muat turun JSON).
-2) “Kongsi Sandaran” jika Web Share API tersedia (`navigator.share`) dengan fail JSON.
-3) “Kongsi Ringkasan”:
-   - Jana teks BM ringkas (pendapatan, perbelanjaan, surplus/defisit, baki tunai/bank) untuk tempoh semasa
-   - Butang “Salin Ringkasan”
-   - Butang “Buka WhatsApp” menggunakan `https://wa.me/?text=` (encodeURIComponent)
-4) Import JSON:
-   - Preview sebelum sahkan import: bilangan tempoh/akaun/transaksi yang akan berubah
-   - Pilihan “Gabung” (merge) atau “Ganti” (overwrite)
-   - Papar ralat import yang jelas jika format tidak sah
-5) Eksport/Import gunakan `schemaVersion` untuk serasi versi.
+                  <button class="butang" id="btnKosongkanPenapis" type="button">Kosongkan</button>
+                </div>
 
-PENERANGAN “APA YANG DIMUAT TURUN” (WAJIB):
-- Sediakan satu seksyen khas “Sandaran & Muat Turun” (accordion/collapse, default collapsed) dalam “Tetapan” dan/atau “Bantuan”.
-- Terangkan dalam BM yang mudah:
-  1) “Sandaran Penuh (JSON)”:
-     - Apa kandungannya (profil kelab, tempoh, akaun, transaksi, tetapan)
-     - Bila patut guna (tukar telefon/laptop, serah tugas bendahari, keselamatan data)
-     - Cara guna semula (Import JSON)
-  2) “Eksport Laporan (CSV)”:
-     - Apa kandungannya (jadual laporan)
-     - Kegunaan (buka dalam Excel/Google Sheets, buat graf, semak)
-     - Nota: satu laporan = satu fail CSV
-  3) “Cetak / Simpan PDF”:
-     - Butang “Cetak Laporan” buka dialog cetak pelayar
-     - Pengguna boleh pilih “Simpan sebagai PDF” jika ada
-     - Kegunaan (laporan rasmi, lampiran)
-- Sertakan contoh nama fail:
-  - sandaran-kelab-YYYY-MM-DD.json
-  - untung-rugi-<label-tempoh>.csv
-  - perbandingan-multi-tahun.csv
-- Nota: “Data disimpan dalam peranti (localStorage). Sandaran JSON disyorkan secara berkala.”
+                <div class="nota">
+                  <b>Nota ringkas:</b> Penapis lanjutan membantu cari transaksi tertentu. Jika anda pengguna komuniti, anda boleh guna carian sahaja.
+                </div>
+              </div>
+            </div>
+          </div>
 
-BUTIRAN TEKNIKAL (WAJIB):
-- Kod JS modular (IIFE/namespace) + komen ringkas.
-- Event delegation untuk elemen dinamik.
-- Gunakan CSS variables untuk tema, saiz fon, jarak sentuhan.
-- Pastikan semua fungsi ada keadaan kosong (tiada data) yang kemas.
-- Pastikan tiada data hilang tanpa amaran.
+          <div class="kpi" style="grid-template-columns: repeat(2, minmax(0, 1fr));">
+            <div class="kotak">
+              <div class="label">Jumlah Pendapatan Ditapis</div>
+              <div class="nilai" id="jumlahPendapatanDitapis">RM 0</div>
+            </div>
+            <div class="kotak">
+              <div class="label">Jumlah Perbelanjaan Ditapis</div>
+              <div class="nilai" id="jumlahPerbelanjaanDitapis">RM 0</div>
+            </div>
+          </div>
 
-SEKSYEN “BANTUAN” (WAJIB DI HUJUNG HALAMAN, BOLEH BUKA/TUTUP):
-- Cara mula cepat (wizard)
-- Cara sediakan Tempoh Laporan, Akaun, dan Transaksi
-- Cara laporan dikira (single-entry) + contoh ringkas
-- Cara perbandingan multi-tahun
-- Cara sandaran/import, cetak, dan kongsi ringkasan WhatsApp
+          <div class="sembunyi-besar" id="jadualTransaksiWrap">
+            <table class="jadual" aria-label="Senarai transaksi">
+              <thead>
+                <tr>
+                  <th>Tarikh</th>
+                  <th>No. Resit/Rujukan</th>
+                  <th>Butiran</th>
+                  <th>Akaun/Kategori</th>
+                  <th class="pusat">Tunai/Bank</th>
+                  <th class="kanan">Amaun</th>
+                  <th class="pusat">Tindakan</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyTransaksi"></tbody>
+            </table>
+            <div class="bantuan" id="tiadaTransaksiJadual">Tiada transaksi untuk dipaparkan.</div>
+          </div>
 
-Sekali lagi: Keluarkan HANYA kandungan penuh `index.html`.
+          <div class="sembunyi-kecil" id="kadTransaksiWrap">
+            <div class="senarai-kad" id="kadTransaksi"></div>
+            <div class="bantuan" id="tiadaTransaksiKad">Tiada transaksi untuk dipaparkan.</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LAPORAN -->
+  <section id="halaman-laporan" class="grid sembunyi">
+    <div class="kad">
+      <div class="tajuk-kad">
+        <h2>Laporan</h2>
+        <div class="baris baris-rapat">
+          <button class="butang" id="btnCetakLaporan" type="button">
+            <span class="ikon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M6 9V4h12v5" stroke="currentColor" stroke-width="2"/><path d="M6 18H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-1" stroke="currentColor" stroke-width="2"/><path d="M6 14h12v6H6z" stroke="currentColor" stroke-width="2"/></svg>
+            </span>
+            Cetak Laporan
+          </button>
+          <button class="butang" id="btnEksportLaporanCSV" type="button" title="Eksport laporan semasa (CSV)">
+            <span class="ikon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M7 8l5-5 5 5M12 3v12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 21h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </span>
+            Eksport CSV
+          </button>
+        </div>
+      </div>
+      <div class="isi-kad">
+        <div class="baris" style="justify-content: space-between;">
+          <label class="medan pilih-tempoh">
+            <span>Tempoh Laporan</span>
+            <select class="pilih-kecil" id="pilihTempohLaporan"></select>
+          </label>
+
+          <label class="medan" style="max-width: 340px;">
+            <span>Pilih Laporan</span>
+            <select class="input" id="pilihJenisLaporan" aria-label="Pilih jenis laporan">
+              <option value="untungRugi">Penyata Pendapatan (Untung Rugi)</option>
+              <option value="kedudukan">Penyata Kedudukan Kewangan</option>
+              <option value="aliran">Ringkasan Aliran Tunai</option>
+            </select>
+          </label>
+
+          <div class="baris baris-rapat">
+            <span class="tag" id="tagLaporanRingkas">Sedia untuk dicetak</span>
+          </div>
+        </div>
+
+        <div class="ruang"></div>
+
+        <!-- laporan semasa -->
+        <div id="laporanSemasa"></div>
+
+        <div class="ruang"></div>
+
+        <!-- pecahan bulanan -->
+        <div class="accordion" id="accPecahanBulananWrap">
+          <button class="acc-tajuk" type="button" aria-expanded="false" aria-controls="accPecahanBulanan" id="btnAccPecahan">
+            <span class="acc-kiri">
+              <span>Pecahan Bulanan</span>
+              <div class="acc-sub">Lihat trend bulanan jika data mencukupi</div>
+            </span>
+            <svg class="acc-ikon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="acc-kandungan" id="accPecahanBulanan" data-buka="tidak">
+            <div id="pecahanBulanan"></div>
+            <p class="bantuan" id="pecahanBulananNota" style="margin-bottom:0;">Jika tiada data, pecahan bulanan tidak dipaparkan.</p>
+          </div>
+        </div>
+
+        <div class="ruang"></div>
+
+        <!-- perbandingan multi-tahun -->
+        <div class="accordion">
+          <button class="acc-tajuk" type="button" aria-expanded="false" aria-controls="accBanding" id="btnAccBanding">
+            <span class="acc-kiri">
+              <span>Perbandingan Multi-Tahun</span>
+              <div class="acc-sub">Banding 2–5 tempoh + carta trend</div>
+            </span>
+            <svg class="acc-ikon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="acc-kandungan" id="accBanding" data-buka="tidak">
+            <div class="grid" style="gap: 12px;">
+              <div class="kad" style="box-shadow:none;">
+                <div class="isi-kad" style="padding: 0;">
+                  <p class="kapsyen" style="margin: 0 0 8px 0;">
+                    Pilih 2 hingga 5 Tempoh Laporan untuk dibandingkan. Carta mesra buta warna: label nilai + corak/garis berbeza.
+                  </p>
+                  <div class="kipas" id="pilihanBanding"></div>
+                  <div class="ruang"></div>
+                  <div class="baris">
+                    <label class="medan" style="max-width: 280px;">
+                      <span>Paparan</span>
+                      <select class="input" id="pilihBandingPaparan">
+                        <option value="nilai">Nilai (RM)</option>
+                        <option value="peratus">Peratus (Common-size)</option>
+                      </select>
+                    </label>
+                    <button class="butang" id="btnEksportBandingCSV" type="button">Eksport CSV Perbandingan</button>
+                  </div>
+                </div>
+              </div>
+
+              <div id="jadualBandingWrap" class="sembunyi">
+                <table class="jadual" aria-label="Jadual perbandingan multi-tahun">
+                  <thead id="theadBanding"></thead>
+                  <tbody id="tbodyBanding"></tbody>
+                </table>
+              </div>
+
+              <div class="grid" style="grid-template-columns: 1fr; gap: 12px;">
+                <div>
+                  <p style="margin: 0 0 8px 0; font-weight: 900;">Carta 1: Surplus/Defisit Bersih mengikut tempoh</p>
+                  <canvas class="kanvas" id="kanvasSurplus" width="900" height="320" aria-label="Carta surplus/defisit bersih mengikut tempoh"></canvas>
+                </div>
+                <div>
+                  <p style="margin: 0 0 8px 0; font-weight: 900;">Carta 2: Pendapatan vs Perbelanjaan mengikut tempoh</p>
+                  <canvas class="kanvas" id="kanvasPendapatanPerbelanjaan" width="900" height="320" aria-label="Carta pendapatan dan perbelanjaan mengikut tempoh"></canvas>
+                </div>
+              </div>
+
+              <div id="notaBanding" class="bantuan">Pilih sekurang-kurangnya 2 tempoh untuk memaparkan jadual dan carta.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ruang"></div>
+
+        <div id="amaranRekonsiliasi" class="amaran-kotak sembunyi"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TETAPAN -->
+  <section id="halaman-tetapan" class="grid sembunyi">
+    <div class="grid grid-2">
+      <div class="kad">
+        <div class="tajuk-kad">
+          <h2>Tetapan</h2>
+          <div class="baris baris-rapat">
+            <button class="butang butang-separa" id="btnBukaProfil" type="button">Profil Kelab</button>
+            <button class="butang butang-separa" id="btnBukaTempoh" type="button">Tempoh</button>
+            <button class="butang butang-separa" id="btnBukaAkaun" type="button">Akaun</button>
+          </div>
+        </div>
+        <div class="isi-kad">
+          <div class="accordion">
+            <button class="acc-tajuk" type="button" aria-expanded="false" aria-controls="accAkses" id="btnAccAkses">
+              <span class="acc-kiri">
+                <span>Aksesibiliti</span>
+                <div class="acc-sub">Kontras tinggi, fon besar, jarak sentuhan, kurangkan animasi</div>
+              </span>
+              <svg class="acc-ikon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="acc-kandungan" id="accAkses" data-buka="tidak">
+              <div class="grid" style="grid-template-columns: 1fr; gap: 10px;">
+                <label class="medan">
+                  <span>Saiz Fon</span>
+                  <select class="input" id="tetFon">
+                    <option value="normal">Normal</option>
+                    <option value="besar">Besar</option>
+                    <option value="sangat-besar">Sangat Besar</option>
+                  </select>
+                </label>
+
+                <label class="medan">
+                  <span>Jarak Sentuhan</span>
+                  <select class="input" id="tetSentuh">
+                    <option value="normal">Normal</option>
+                    <option value="besar">Besar</option>
+                  </select>
+                </label>
+
+                <div class="baris">
+                  <label class="baris" style="gap:10px;">
+                    <input type="checkbox" id="tetKontras" />
+                    <span>Kontras Tinggi</span>
+                  </label>
+                  <label class="baris" style="gap:10px;">
+                    <input type="checkbox" id="tetButaWarna" />
+                    <span>Mesra Buta Warna</span>
+                  </label>
+                  <label class="baris" style="gap:10px;">
+                    <input type="checkbox" id="tetKurangAnim" />
+                    <span>Kurangkan Animasi</span>
+                  </label>
+                </div>
+
+                <div class="nota">
+                  <b>Tip:</b> Jika pengguna warga emas atau telefon kecil, pilih “Saiz Fon: Besar” dan “Jarak Sentuhan: Besar”.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="ruang"></div>
+
+          <div class="accordion">
+            <button class="acc-tajuk" type="button" aria-expanded="false" aria-controls="accTema" id="btnAccTema">
+              <span class="acc-kiri">
+                <span>Tema</span>
+                <div class="acc-sub">Cerah, Gelap, Neutral</div>
+              </span>
+              <svg class="acc-ikon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="acc-kandungan" id="accTema" data-buka="tidak">
+              <label class="medan">
+                <span>Pilih Tema</span>
+                <select class="input" id="tetTema">
+                  <option value="cerah">Tema Cerah</option>
+                  <option value="gelap">Tema Gelap</option>
+                  <option value="neutral">Tema Neutral</option>
+                </select>
+                <div class="bantuan">Nota: “Kontras Tinggi” boleh mengatasi tema ini.</div>
+              </label>
+            </div>
+          </div>
+
+          <div class="ruang"></div>
+
+          <div class="accordion">
+            <button class="acc-tajuk" type="button" aria-expanded="false" aria-controls="accPaparan" id="btnAccPaparan">
+              <span class="acc-kiri">
+                <span>Paparan Pengguna</span>
+                <div class="acc-sub">Bendahari / AJK / Ahli-Pelajar (paparan sahaja)</div>
+              </span>
+              <svg class="acc-ikon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="acc-kandungan" id="accPaparan" data-buka="tidak">
+              <label class="medan">
+                <span>Pilih Paparan</span>
+                <select class="input" id="tetPeranan">
+                  <option value="Bendahari">Bendahari (penuh)</option>
+                  <option value="AJK">AJK (kurang fungsi padam)</option>
+                  <option value="Ahli/Pelajar">Ahli/Pelajar (fokus lihat laporan)</option>
+                </select>
+                <div class="bantuan">Nota: Ini hanya menukar paparan, bukan keselamatan sebenar.</div>
+              </label>
+            </div>
+          </div>
+
+          <div class="ruang"></div>
+
+          <div class="accordion">
+            <button class="acc-tajuk" type="button" aria-expanded="false" aria-controls="accSandar" id="btnAccSandar">
+              <span class="acc-kiri">
+                <span>Sandaran & Kongsi</span>
+                <div class="acc-sub">Sandarkan JSON, kongsi ringkasan WhatsApp, import data</div>
+              </span>
+              <svg class="acc-ikon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="acc-kandungan" id="accSandar" data-buka="tidak">
+              <div class="baris">
+                <button class="butang butang-utama" id="btnSandarJSON" type="button">Sandarkan Sekarang (JSON)</button>
+                <button class="butang" id="btnKongsiSandar" type="button">Kongsi Sandaran</button>
+                <button class="butang" id="btnPulihSnapshot" type="button">Pulihkan Snapshot</button>
+              </div>
+
+              <div class="ruang"></div>
+
+              <div class="grid" style="grid-template-columns: 1fr; gap: 10px;">
+                <label class="medan">
+                  <span>Import Data (JSON)</span>
+                  <input class="input" id="failImport" type="file" accept="application/json" />
+                  <div class="bantuan">Anda boleh pilih “Gabung” atau “Ganti” selepas preview.</div>
+                </label>
+
+                <div class="baris">
+                  <button class="butang" id="btnKongsiRingkasan" type="button">Kongsi Ringkasan</button>
+                  <button class="butang" id="btnSalinRingkasan" type="button">Salin Ringkasan</button>
+                  <a class="butang" id="pautanWhatsApp" href="#" target="_blank" rel="noopener" aria-label="Buka WhatsApp dengan teks ringkasan">Buka WhatsApp</a>
+                </div>
+
+                <div class="pemapar-teks" id="paparRingkasan" aria-label="Teks ringkasan untuk dikongsi"></div>
+
+                <div class="nota">
+                  <b>Nota:</b> Data sebenar disimpan dalam peranti (localStorage). Sandaran JSON disyorkan secara berkala.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="ruang"></div>
+
+          <div class="accordion">
+            <button class="acc-tajuk" type="button" aria-expanded="false" aria-controls="accMuatTurun" id="btnAccMuatTurun">
+              <span class="acc-kiri">
+                <span>Sandaran & Muat Turun</span>
+                <div class="acc-sub">Apa yang dimuat turun selepas guna aplikasi</div>
+              </span>
+              <svg class="acc-ikon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="acc-kandungan" id="accMuatTurun" data-buka="tidak">
+              <ul style="margin:0; padding-left: 18px;">
+                <li><b>Sandaran Penuh (JSON)</b>: mengandungi profil kelab, tempoh laporan, carta akaun, transaksi, dan tetapan. Sesuai untuk tukar telefon/laptop atau serah tugas bendahari. Guna semula melalui <b>Import JSON</b>.</li>
+                <li><b>Eksport Laporan (CSV)</b>: fail jadual laporan untuk dibuka dalam Excel/Google Sheets (buat graf, semak). Nota: satu laporan = satu fail CSV.</li>
+                <li><b>Cetak / Simpan PDF</b>: butang <b>Cetak Laporan</b> akan buka dialog cetak pelayar. Anda boleh pilih “Simpan sebagai PDF” jika tersedia untuk laporan rasmi/lampsiran.</li>
+              </ul>
+              <div class="ruang"></div>
+              <p class="bantuan" style="margin:0;">
+                Contoh nama fail: <b>sandaran-kelab-YYYY-MM-DD.json</b>, <b>untung-rugi-2025.csv</b>, <b>perbandingan-multi-tahun.csv</b>.
+              </p>
+            </div>
+          </div>
+
+          <div class="ruang"></div>
+
+          <div class="accordion">
+            <button class="acc-tajuk" type="button" aria-expanded="false" aria-controls="accLanjutan" id="btnAccLanjutan">
+              <span class="acc-kiri">
+                <span>Tetapan Lanjutan</span>
+                <div class="acc-sub">Perpuluhan, simbol RM, set semula data</div>
+              </span>
+              <svg class="acc-ikon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="acc-kandungan" id="accLanjutan" data-buka="tidak">
+              <div class="grid" style="grid-template-columns: 1fr; gap: 10px;">
+                <label class="medan">
+                  <span>Simbol Mata Wang</span>
+                  <input class="input" id="tetSimbol" value="RM" />
+                </label>
+
+                <label class="medan">
+                  <span>Perpuluhan</span>
+                  <select class="input" id="tetPerpuluhan">
+                    <option value="2">2 tempat perpuluhan</option>
+                    <option value="0">0 tempat perpuluhan</option>
+                  </select>
+                </label>
+
+                <div class="bahaya-kotak">
+                  <b>Set Semula Semua Data</b><br />
+                  Ini akan memadam semua data dalam peranti ini. Anda perlu taip <b>RESET</b> untuk meneruskan.
+                  <div class="ruang"></div>
+                  <button class="butang butang-bahaya" id="btnSetSemula" type="button">Set Semula Semua Data</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="ruang"></div>
+
+          <div class="accordion">
+            <button class="acc-tajuk" type="button" aria-expanded="false" aria-controls="accBantuan" id="btnAccBantuan">
+              <span class="acc-kiri">
+                <span>Bantuan</span>
+                <div class="acc-sub">Cara guna, contoh, batasan single-entry, cetak & kongsi</div>
+              </span>
+              <svg class="acc-ikon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="acc-kandungan" id="accBantuan" data-buka="tidak">
+              <div class="grid" style="gap: 10px;">
+                <div class="nota">
+                  <b>Cara mula cepat:</b> Cipta Tempoh → Import Akaun Contoh → Masukkan Transaksi → Lihat Laporan → Cetak/Sandarkan.
+                </div>
+
+                <div>
+                  <b>Single-entry (ringkas):</b>
+                  <ul style="margin: 8px 0 0; padding-left: 18px;">
+                    <li>Setiap transaksi dipadankan kepada satu <b>Akaun/Kategori</b> dan kaedah bayaran <b>Tunai/Bank</b>.</li>
+                    <li>Laporan “Penyata Kedudukan Kewangan” ialah anggaran ringkas dan mungkin tidak seimbang jika data tidak lengkap.</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <b>Kongsi ringkasan WhatsApp:</b>
+                  <ul style="margin: 8px 0 0; padding-left: 18px;">
+                    <li>Tekan <b>Kongsi Ringkasan</b> untuk jana teks BM.</li>
+                    <li>Tekan <b>Salin Ringkasan</b> atau <b>Buka WhatsApp</b> untuk hantar.</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <b>Cetak / Simpan PDF:</b>
+                  <ul style="margin: 8px 0 0; padding-left: 18px;">
+                    <li>Tekan <b>Cetak Laporan</b> di menu Laporan.</li>
+                    <li>Dalam dialog cetak, pilih “Simpan sebagai PDF” jika tersedia.</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <b>Mod Latihan:</b> sesuai untuk latihan staf/pelajar/komuniti tanpa menjejaskan data sebenar.
+                </div>
+
+                <div>
+                  <b>Glosari mini:</b>
+                  <ul style="margin: 8px 0 0; padding-left: 18px;">
+                    <li><b>Pendapatan</b>: wang masuk (yuran, sumbangan, jualan).</li>
+                    <li><b>Perbelanjaan</b>: wang keluar (jamuan, alat tulis, sewa).</li>
+                    <li><b>Surplus</b>: pendapatan > perbelanjaan.</li>
+                    <li><b>Defisit</b>: perbelanjaan > pendapatan.</li>
+                    <li><b>Tempoh Laporan</b>: julat tarikh untuk laporan (contoh: 1/1/2025–31/12/2025).</li>
+                    <li><b>Tunai/Bank</b>: kaedah bayaran transaksi.</li>
+                  </ul>
+                </div>
+
+                <div class="baris">
+                  <button class="butang" id="btnDataContoh" type="button">Masukkan Data Contoh</button>
+                  <button class="butang" id="btnKosongkanDataContoh" type="button">Padam Data Contoh</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="kad">
+        <div class="tajuk-kad">
+          <h2>Mod Lanjutan</h2>
+          <span class="lencana" id="lencanaLanjutan">Tersembunyi dalam Mod Ringkas</span>
+        </div>
+        <div class="isi-kad" id="panelLanjutan">
+          <div class="nota">
+            <b>Nota:</b> Dalam Mod Ringkas, kebanyakan pengguna hanya perlukan Transaksi dan Laporan.
+            Di sini anda boleh urus <b>Profil Kelab</b>, <b>Tempoh Laporan</b>, dan <b>Carta Akaun</b>.
+          </div>
+
+          <div class="ruang"></div>
+
+          <div class="accordion">
+            <button class="acc-tajuk" type="button" aria-expanded="false" aria-controls="accProfilKelab" id="btnAccProfilKelab">
+              <span class="acc-kiri">
+                <span>Profil Kelab</span>
+                <div class="acc-sub">Nama kelab, no pendaftaran, disediakan oleh</div>
+              </span>
+              <svg class="acc-ikon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="acc-kandungan" id="accProfilKelab" data-buka="tidak">
+              <div class="grid" style="grid-template-columns: 1fr; gap: 10px;">
+                <label class="medan">
+                  <span>Nama Kelab</span>
+                  <input class="input" id="profilNamaKelab" placeholder="Contoh: Kelab Kebajikan..." />
+                </label>
+                <label class="medan">
+                  <span>No. Pendaftaran (opsyenal)</span>
+                  <input class="input" id="profilNoDaftar" placeholder="Contoh: UMS/KELAB/123" />
+                </label>
+                <div class="baris">
+                  <label class="medan" style="flex:1 1 220px;">
+                    <span>Disediakan oleh (Nama)</span>
+                    <input class="input" id="profilDisediaNama" placeholder="Contoh: Ali bin Abu" />
+                  </label>
+                  <label class="medan" style="flex:1 1 220px;">
+                    <span>Jawatan</span>
+                    <input class="input" id="profilDisediaJawatan" placeholder="Contoh: Bendahari" />
+                  </label>
+                </div>
+                <div class="baris">
+                  <button class="butang butang-utama" id="btnSimpanProfil" type="button">Simpan Profil</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="ruang"></div>
+
+          <div class="accordion">
+            <button class="acc-tajuk" type="button" aria-expanded="false" aria-controls="accTempoh" id="btnAccTempoh">
+              <span class="acc-kiri">
+                <span>Tempoh Laporan</span>
+                <div class="acc-sub">Tambah/ubah/padam tempoh + baki awal Tunai/Bank</div>
+              </span>
+              <svg class="acc-ikon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="acc-kandungan" id="accTempoh" data-buka="tidak">
+              <div class="grid" style="gap: 10px;">
+                <div class="baris">
+                  <label class="medan" style="flex:1 1 160px; max-width: 240px;">
+                    <span>Label Tempoh</span>
+                    <input class="input" id="tempohLabel" placeholder="Contoh: 2025" />
+                  </label>
+                  <label class="medan" style="flex:1 1 160px; max-width: 240px;">
+                    <span>Tarikh Mula</span>
+                    <input class="input" id="tempohMula" type="date" />
+                  </label>
+                  <label class="medan" style="flex:1 1 160px; max-width: 240px;">
+                    <span>Tarikh Tamat</span>
+                    <input class="input" id="tempohTamat" type="date" />
+                  </label>
+                </div>
+
+                <div class="baris">
+                  <label class="medan" style="flex:1 1 200px; max-width: 260px;">
+                    <span>Baki Awal Tunai (RM)</span>
+                    <input class="input" id="bakiAwalTunai" inputmode="decimal" placeholder="0" />
+                  </label>
+                  <label class="medan" style="flex:1 1 200px; max-width: 260px;">
+                    <span>Baki Awal Bank (RM)</span>
+                    <input class="input" id="bakiAwalBank" inputmode="decimal" placeholder="0" />
+                  </label>
+                  <button class="butang butang-utama" id="btnTambahTempoh" type="button">Tambah Tempoh</button>
+                </div>
+
+                <div class="pembahagi"></div>
+
+                <div class="baris" style="justify-content:space-between;">
+                  <b>Senarai Tempoh</b>
+                  <span class="bantuan">Klik “Tetapkan” untuk jadikan tempoh semasa.</span>
+                </div>
+
+                <div class="sembunyi-besar">
+                  <table class="jadual" aria-label="Senarai tempoh laporan">
+                    <thead>
+                      <tr>
+                        <th>Label</th>
+                        <th>Tarikh</th>
+                        <th class="kanan">Baki Awal Tunai</th>
+                        <th class="kanan">Baki Awal Bank</th>
+                        <th class="pusat">Tindakan</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tbodyTempoh"></tbody>
+                  </table>
+                </div>
+                <div class="sembunyi-kecil" id="kadTempoh"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="ruang"></div>
+
+          <div class="accordion">
+            <button class="acc-tajuk" type="button" aria-expanded="false" aria-controls="accAkaun" id="btnAccAkaun">
+              <span class="acc-kiri">
+                <span>Carta Akaun</span>
+                <div class="acc-sub">Tambah/ubah/padam akaun + import akaun contoh</div>
+              </span>
+              <svg class="acc-ikon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="acc-kandungan" id="accAkaun" data-buka="tidak">
+              <div class="grid" style="gap: 10px;">
+                <div class="baris" style="align-items:flex-end;">
+                  <label class="medan" style="flex: 1 1 220px; min-width: 220px;">
+                    <span>Nama Akaun</span>
+                    <input class="input" id="akaunNama" placeholder="Contoh: Yuran Keahlian" />
+                  </label>
+                  <label class="medan" style="flex: 1 1 200px; max-width: 260px;">
+                    <span>Jenis Akaun</span>
+                    <select class="input" id="akaunJenis">
+                      <option value="Pendapatan">Pendapatan</option>
+                      <option value="Perbelanjaan">Perbelanjaan</option>
+                      <option value="Aset">Aset</option>
+                      <option value="Liabiliti">Liabiliti</option>
+                      <option value="Ekuiti">Ekuiti</option>
+                    </select>
+                  </label>
+                  <button class="butang butang-utama" id="btnTambahAkaun" type="button">Tambah Akaun</button>
+                </div>
+
+                <div class="baris">
+                  <button class="butang" id="btnImportAkaunContoh" type="button">Import Akaun Contoh (BM)</button>
+                  <label class="medan" style="max-width: 260px;">
+                    <span>Penapis Jenis</span>
+                    <select class="input" id="penapisJenisAkaun">
+                      <option value="">Semua</option>
+                      <option value="Pendapatan">Pendapatan</option>
+                      <option value="Perbelanjaan">Perbelanjaan</option>
+                      <option value="Aset">Aset</option>
+                      <option value="Liabiliti">Liabiliti</option>
+                      <option value="Ekuiti">Ekuiti</option>
+                    </select>
+                  </label>
+                  <label class="medan" style="flex: 1 1 240px;">
+                    <span>Carian Akaun</span>
+                    <input class="input" id="carianAkaun" placeholder="Cari nama akaun..." />
+                  </label>
+                </div>
+
+                <div class="sembunyi-besar">
+                  <table class="jadual" aria-label="Senarai carta akaun">
+                    <thead>
+                      <tr>
+                        <th>Nama Akaun</th>
+                        <th>Jenis</th>
+                        <th class="pusat">Digunakan</th>
+                        <th class="pusat">Tindakan</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tbodyAkaun"></tbody>
+                  </table>
+                </div>
+                <div class="sembunyi-kecil" id="kadAkaun"></div>
+
+                <p class="bantuan" style="margin:0;">
+                  Nota: Akaun tidak boleh dipadam jika sudah digunakan oleh transaksi.
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="cetak-kaki" id="cetakKaki"></div>
