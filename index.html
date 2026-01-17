@@ -1,0 +1,232 @@
+Anda ialah jurutera front-end kanan. Cipta aplikasi web satu fail dalam HTML/CSS/JavaScript sahaja bernama `index.html` untuk “Pencipta Penyata Kewangan Kelab” bagi pengurusan kelab staf, kelab pelajar, dan komuniti. Aplikasi mesti sangat mesra pengguna telefon dan pengguna bukan teknikal.
+
+PERATURAN OUTPUT (WAJIB):
+1) Keluarkan HANYA kandungan penuh `index.html` (tiada penerangan, tiada markdown fences).
+2) Berfungsi OFFLINE (tiada perpustakaan luaran, tiada CDN, tiada panggilan rangkaian).
+3) Semua teks UI, label, butang, mesej ralat, tooltip, bantuan, dan istilah mesti 100% Bahasa Malaysia (BM).
+4) Simpan data automatik (localStorage) dan paparkan status “Disimpan” / “Perubahan belum disimpan”.
+5) Mesti stabil: jangan crash bila data kosong atau import gagal; tunjuk keadaan “Tiada data” dan ralat yang membimbing.
+
+BAHASA & ISTILAH (WAJIB DAN KONSISTEN):
+- Jangan guna istilah Inggeris seperti Dashboard/Settings/Filter/Search/Print/Export/Import/Cash/Bank/Undo.
+- Gunakan istilah BM berikut di seluruh aplikasi:
+  - “Utama” (bukan Dashboard)
+  - “Tetapan”
+  - “Carian”
+  - “Penapis”
+  - “Cetak”
+  - “Eksport” / “Import”
+  - “Tunai” / “Bank”
+  - “Akaun/Kategori”
+  - “Penyata Pendapatan (Untung Rugi)”
+  - “Penyata Kedudukan Kewangan”
+  - “Ringkasan Aliran Tunai”
+  - “Surplus/Defisit Bersih”
+  - “Tempoh Laporan”
+  - “Buat Asal” (Undo)
+- Gunakan nombor, tarikh, dan format RM yang jelas (contoh: RM 1,234.50) mengikut tetapan perpuluhan.
+
+MODEL PERAKAUNAN:
+- Mata wang: RM (Ringgit Malaysia).
+- Kaedah: SINGLE-ENTRY (setiap transaksi dipadankan kepada satu akaun/kategori + kaedah bayaran Tunai/Bank).
+- Simpan amaun sebagai nombor; tarikh sebagai ISO (YYYY-MM-DD).
+
+REKA BENTUK & TEMA (WAJIB):
+- Reka bentuk mobile-first, moden, ringkas, kemas, dan konsisten.
+- Gunakan CSS variables untuk tema warna (tanpa framework).
+- Sediakan tema:
+  1) Tema Cerah (default)
+  2) Tema Gelap
+  3) Tema Neutral
+  4) Mod Kontras Tinggi (aksesibiliti) — boleh mengatasi tema lain bila diaktifkan
+- Pastikan kontras teks jelas di semua tema.
+- Jangan bergantung pada warna sahaja untuk makna (guna ikon/label/bentuk).
+- Gaya komponen:
+  - Kad (card) dengan bayang lembut, sudut bulat, ruang putih mencukupi
+  - Butang utama lebih menonjol, butang sekunder neutral
+  - Input besar dan mudah ditekan (terutama bila “Jarak Sentuhan: Besar”)
+  - Jadual di desktop, kad di telefon
+- Jika perlu ikon, guna SVG inline ringkas (tanpa library) untuk konsistensi.
+- Tetapan tema dalam “Tetapan”:
+  - Pilih “Tema: Cerah / Gelap / Neutral”
+  - Toggle “Kontras Tinggi”
+  - Simpan pilihan tema dalam localStorage
+
+FOOTER & HAK CIPTA (WAJIB):
+- Letak footer di bahagian bawah aplikasi (bukan modal), dalam BM:
+  - “© <tahun semasa> Assis Kamu UMS. Hak cipta terpelihara.”
+- Tahun semasa dijana automatik melalui JavaScript (bukan hardcode).
+
+CETAK (WAJIB):
+- Gaya cetak kemas:
+  - Tajuk laporan + nama kelab + tempoh laporan + tarikh cetak
+  - Buang elemen navigasi/butang semasa cetak
+  - Pastikan jadual laporan muat halaman (font dan margin sesuai)
+- Sertakan footer cetak dengan:
+  - “© <tahun semasa> Assis Kamu UMS”
+
+REKA BENTUK UI (SANGAT MESRA PENGGUNA, DEFAULT RINGKAS):
+- Aplikasi mesti bermula dalam “Mod Ringkas” supaya bila masuk terus nampak mudah.
+- Sediakan toggle global: “Mod Ringkas / Mod Lanjutan”.
+- Navigasi mesra telefon:
+  - Skrin kecil: navigasi bawah (butang besar) dengan 4 menu sahaja: “Utama | Transaksi | Laporan | Tetapan”.
+  - Skrin besar: boleh guna tab atas tetapi kekalkan menu yang sama.
+- Gunakan bahagian boleh lipat (accordion/collapse) secara meluas supaya skrin tidak semak:
+  - Dalam “Transaksi”: “Penapis Lanjutan” collapsed secara lalai.
+  - Dalam “Laporan”: “Pecahan Bulanan” dan “Perbandingan Multi-Tahun” collapsed secara lalai.
+  - Dalam “Tetapan”: “Aksesibiliti”, “Sandaran & Kongsi”, “Tetapan Lanjutan” collapsed secara lalai.
+- Accordion mesti ada ARIA yang betul (aria-expanded, aria-controls) dan boleh dikawal dengan papan kekunci.
+
+AKSESIBILITI & KOMUNITI (WAJIB):
+- Tetapan “Kontras Tinggi” (On/Off).
+- Tetapan “Mesra Buta Warna” (jangan bergantung pada warna sahaja; carta ada label nilai dan corak/garis berbeza).
+- Tetapan “Saiz Fon”: Normal / Besar / Sangat Besar (guna CSS variables).
+- Tetapan “Jarak Sentuhan”: Normal / Besar (tinggi input/butang dan padding lebih besar).
+- Tetapan “Kurangkan Animasi” (ikut prefers-reduced-motion + toggle manual).
+- Input amaun guna `inputmode="decimal"` dan validasi nombor yang mesra pengguna.
+
+PANDUAN MUDAH (WAJIB):
+- Wizard “Panduan Cepat” kali pertama (boleh diulang dari Bantuan):
+  1) Cipta Tempoh Laporan
+  2) Sediakan Akaun (import akaun contoh)
+  3) Masukkan Transaksi
+  4) Semak Laporan dan Cetak/Kongsi
+- Sediakan “Mod Latihan” (demo) yang tidak menjejaskan data sebenar:
+  - Bila aktif, guna dataset sementara (in-memory) + banner “MOD LATIHAN”.
+  - Butang “Keluar Mod Latihan”.
+- Sertakan glosari mini BM (boleh buka/tutup) untuk istilah: Pendapatan, Perbelanjaan, Surplus, Defisit, Tempoh Laporan, Tunai, Bank.
+
+ANTI-SILAP & PEMULIHAN (WAJIB):
+- “Buat Asal” untuk tindakan padam (akaun/transaksi) sekurang-kurangnya 10 saat (toast + butang).
+- Simpan snapshot automatik (contoh 3 versi) untuk pemulihan selepas import/tersilap.
+- “Set Semula Semua Data” memerlukan pengesahan taip “RESET”.
+
+DATA & MODUL TERAS:
+1) Profil Kelab:
+- Nama Kelab
+- No. Pendaftaran (opsyenal)
+- Disediakan oleh (Nama) dan Jawatan
+- Paparkan di header bersama Tempoh Laporan Semasa
+
+2) Tempoh Laporan:
+- Tambah/ubah/padam tempoh dengan label (cth: 2023, 2024, 2025) + tarikh mula/tamat
+- Tetapkan “Tempoh Semasa”
+- Tetapan baki awal mengikut tempoh:
+  - Baki Awal Tunai (RM)
+  - Baki Awal Bank (RM)
+
+3) Carta Akaun:
+- Akaun: id, nama, jenis (Aset/Liabiliti/Ekuiti/Pendapatan/Perbelanjaan), nota opsyenal
+- Tambah/ubah/padam (halang padam jika digunakan oleh transaksi)
+- Carian dan penapis jenis akaun
+- Sediakan “Import Akaun Contoh (BM)” (wajib) yang mengisi akaun seperti:
+  - Pendapatan: Yuran Keahlian, Jualan, Sumbangan, Tajaan
+  - Perbelanjaan: Jamuan, Pengangkutan, Alat Tulis, Sewa, Utiliti, Hadiah
+  - Ekuiti (opsyen): Dana Permulaan, Sumbangan Modal
+
+4) Transaksi (Single-entry):
+- Medan: Tarikh, No. Resit/Rujukan, Butiran, Amaun (RM), Akaun/Kategori, Kaedah Bayaran (Tunai/Bank)
+- Tambah/ubah/padam + pengesahan padam yang jelas
+- Penapis asas (sentiasa nampak): Tempoh Semasa, Carian kata kunci
+- “Penapis Lanjutan” (collapsed): Julat tarikh, jenis akaun, akaun spesifik, kaedah bayaran, susun tarikh
+- Pada skrin kecil, papar transaksi sebagai kad (bukan jadual semata-mata)
+- Papar ringkasan untuk set ditapis: jumlah pendapatan, jumlah perbelanjaan, surplus/defisit
+
+PENYATA & LAPORAN (IKUT TEMPOH DIPILIH):
+A) Penyata Pendapatan (Untung Rugi):
+- Jumlah Pendapatan dan Perbelanjaan mengikut akaun
+- Surplus/Defisit Bersih
+- “Pecahan Bulanan” (collapsed) untuk lihat trend bulanan (jika data wujud)
+- Eksport CSV + Cetak
+
+B) Penyata Kedudukan Kewangan (ringkas, jelaskan batasan single-entry):
+- Kira Tunai dan Bank:
+  - Baki Akhir Tunai = Baki Awal Tunai + (Pendapatan Tunai - Perbelanjaan Tunai + transaksi lain jika jenis akaun bukan pendapatan/perbelanjaan digunakan)
+  - Baki Akhir Bank = Baki Awal Bank + (Pendapatan Bank - Perbelanjaan Bank + transaksi lain)
+- Jika pengguna guna akaun Aset/Liabiliti/Ekuiti, masukkan sebagai baki berdasarkan transaksi kategori tersebut (anggaran single-entry).
+- Papar amaran rekonsiliasi jika Aset != Liabiliti + Ekuiti dan terangkan dalam BM yang mudah.
+- Eksport CSV + Cetak
+
+C) Ringkasan Aliran Tunai (mudah):
+- Inflow/Outflow mengikut Tunai/Bank dan mengikut jenis akaun
+- Perubahan bersih dan baki akhir Tunai/Bank
+- Eksport CSV + Cetak
+
+PERBANDINGAN MULTI-TAHUN (WAJIB):
+- Dalam menu “Laporan”, sediakan seksyen “Perbandingan Multi-Tahun” (collapsed secara lalai).
+- Pengguna boleh pilih 2–5 Tempoh Laporan untuk dibandingkan.
+- Papar jadual sebelah-menyebelah:
+  - Jumlah Pendapatan, Jumlah Perbelanjaan, Surplus/Defisit Bersih bagi setiap tempoh
+- Carta trend tanpa perpustakaan:
+  - Guna `<canvas>` + JS vanilla
+  - Carta 1: Surplus/Defisit Bersih mengikut tempoh
+  - Carta 2: Pendapatan vs Perbelanjaan mengikut tempoh
+  - Pastikan mesra buta warna: label nilai dan corak/garis berbeza
+- Toggle “Peratus (Common-size)”:
+  - Perbelanjaan mengikut akaun sebagai % daripada jumlah pendapatan bagi setiap tempoh
+- Eksport CSV untuk jadual perbandingan
+
+UTAMA (WAJIB RINGKAS):
+- Paparkan 3 butang besar: “Tambah Transaksi”, “Lihat Laporan”, “Sandarkan/Kongsi”
+- Ringkasan KPI tempoh semasa: Jumlah Pendapatan, Jumlah Perbelanjaan, Surplus/Defisit Bersih, Baki Tunai, Baki Bank, Bilangan Transaksi
+- Senarai “Transaksi Terkini” (10 terakhir)
+
+TETAPAN (WAJIB):
+- Simbol mata wang default “RM” (boleh ubah, tetapi praisi RM)
+- Perpuluhan: 0 atau 2
+- Pilihan jenis pengguna (paparan sahaja, tanpa login):
+  - “Bendahari” (penuh)
+  - “AJK” (kurang fungsi padam)
+  - “Ahli/Pelajar” (fokus lihat laporan, transaksi terhad)
+- Aksesibiliti: Kontras Tinggi, Mesra Buta Warna, Saiz Fon, Jarak Sentuhan, Kurangkan Animasi
+- Tetapan tema: Cerah/Gelap/Neutral + Kontras Tinggi
+
+SANDARAN & KONGSI (WAJIB):
+1) “Sandarkan Sekarang” (muat turun JSON).
+2) “Kongsi Sandaran” jika Web Share API tersedia (`navigator.share`) dengan fail JSON.
+3) “Kongsi Ringkasan”:
+   - Jana teks BM ringkas (pendapatan, perbelanjaan, surplus/defisit, baki tunai/bank) untuk tempoh semasa
+   - Butang “Salin Ringkasan”
+   - Butang “Buka WhatsApp” menggunakan `https://wa.me/?text=` (encodeURIComponent)
+4) Import JSON:
+   - Preview sebelum sahkan import: bilangan tempoh/akaun/transaksi yang akan berubah
+   - Pilihan “Gabung” (merge) atau “Ganti” (overwrite)
+   - Papar ralat import yang jelas jika format tidak sah
+5) Eksport/Import gunakan `schemaVersion` untuk serasi versi.
+
+PENERANGAN “APA YANG DIMUAT TURUN” (WAJIB):
+- Sediakan satu seksyen khas “Sandaran & Muat Turun” (accordion/collapse, default collapsed) dalam “Tetapan” dan/atau “Bantuan”.
+- Terangkan dalam BM yang mudah:
+  1) “Sandaran Penuh (JSON)”:
+     - Apa kandungannya (profil kelab, tempoh, akaun, transaksi, tetapan)
+     - Bila patut guna (tukar telefon/laptop, serah tugas bendahari, keselamatan data)
+     - Cara guna semula (Import JSON)
+  2) “Eksport Laporan (CSV)”:
+     - Apa kandungannya (jadual laporan)
+     - Kegunaan (buka dalam Excel/Google Sheets, buat graf, semak)
+     - Nota: satu laporan = satu fail CSV
+  3) “Cetak / Simpan PDF”:
+     - Butang “Cetak Laporan” buka dialog cetak pelayar
+     - Pengguna boleh pilih “Simpan sebagai PDF” jika ada
+     - Kegunaan (laporan rasmi, lampiran)
+- Sertakan contoh nama fail:
+  - sandaran-kelab-YYYY-MM-DD.json
+  - untung-rugi-<label-tempoh>.csv
+  - perbandingan-multi-tahun.csv
+- Nota: “Data disimpan dalam peranti (localStorage). Sandaran JSON disyorkan secara berkala.”
+
+BUTIRAN TEKNIKAL (WAJIB):
+- Kod JS modular (IIFE/namespace) + komen ringkas.
+- Event delegation untuk elemen dinamik.
+- Gunakan CSS variables untuk tema, saiz fon, jarak sentuhan.
+- Pastikan semua fungsi ada keadaan kosong (tiada data) yang kemas.
+- Pastikan tiada data hilang tanpa amaran.
+
+SEKSYEN “BANTUAN” (WAJIB DI HUJUNG HALAMAN, BOLEH BUKA/TUTUP):
+- Cara mula cepat (wizard)
+- Cara sediakan Tempoh Laporan, Akaun, dan Transaksi
+- Cara laporan dikira (single-entry) + contoh ringkas
+- Cara perbandingan multi-tahun
+- Cara sandaran/import, cetak, dan kongsi ringkasan WhatsApp
+
+Sekali lagi: Keluarkan HANYA kandungan penuh `index.html`.
