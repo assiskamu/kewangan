@@ -1,850 +1,2486 @@
-<!-- halaman -->
-<main id="kandungan">
-  <!-- UTAMA -->
-  <section id="halaman-utama" class="grid">
-    <div class="kad">
-      <div class="tajuk-kad">
-        <h2>Utama</h2>
-        <div class="status-simpan" aria-live="polite">
-          <span class="titik" id="titikSimpan" aria-hidden="true"></span>
-          <span id="teksSimpan">Memuatkan...</span>
+<!doctype html>
+<html lang="ms">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="description" content="Pencipta Penyata Kewangan Kelab (Single-entry) - Offline" />
+  <title>Pencipta Penyata Kewangan Kelab</title>
+  <style>
+    :root{
+      --bg:#f6f7fb; --card:#fff; --text:#0f172a; --muted:#64748b; --line:rgba(15,23,42,.14);
+      --pri:#0f766e; --pri2:#115e59; --danger:#b91c1c; --warn:#a16207; --ok:#166534;
+      --shadow:0 10px 26px rgba(0,0,0,.08);
+      --r:16px; --tap:44px; --font:16px;
+      --focus:rgba(15,118,110,.35);
+    }
+    [data-theme="dark"]{
+      --bg:#0b1220; --card:#0f172a; --text:#e5e7eb; --muted:#94a3b8; --line:rgba(226,232,240,.16);
+      --pri:#2dd4bf; --pri2:#14b8a6; --shadow:0 10px 26px rgba(0,0,0,.35);
+      --focus:rgba(45,212,191,.35);
+    }
+    [data-contrast="high"]{
+      --bg:#000; --card:#0a0a0a; --text:#fff; --muted:#fff; --line:rgba(255,255,255,.35);
+      --pri:#00ffcc; --pri2:#00d6ad; --danger:#ff4d4d; --warn:#ffd24d; --ok:#7cff7c;
+      --shadow:none; --focus:rgba(0,255,204,.45);
+    }
+    [data-motion="reduced"] *{ transition:none!important; animation:none!important; scroll-behavior:auto!important; }
+    html{ font-size:var(--font); }
+    body{
+      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      background: radial-gradient(1200px 800px at 15% -10%, rgba(15,118,110,.10), transparent 60%),
+                  radial-gradient(900px 700px at 90% 0%, rgba(29,78,216,.08), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+      min-height:100vh;
+    }
+    header{
+      position:sticky; top:0; z-index:30;
+      background: color-mix(in srgb, var(--bg) 78%, transparent);
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid var(--line);
+    }
+    .wrap{ max-width:1100px; margin:0 auto; padding:12px 14px 92px; }
+    .bar{ max-width:1100px; margin:0 auto; padding:10px 14px; display:flex; gap:12px; align-items:center; justify-content:space-between; }
+    .left{ display:flex; gap:12px; align-items:center; min-width:0; }
+    .logo{ width:44px; height:44px; border-radius:14px; background:linear-gradient(135deg,var(--pri),var(--pri2)); box-shadow:var(--shadow); display:grid; place-items:center; flex:0 0 auto; color:#fff; }
+    .title{ min-width:0; }
+    h1{ margin:0; font-size:1rem; font-weight:900; letter-spacing:-.02em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .sub{ display:flex; gap:8px; flex-wrap:wrap; color:var(--muted); font-size:.85rem; margin-top:2px; }
+    .tag{ padding:4px 10px; border-radius:999px; border:1px solid color-mix(in srgb, var(--pri) 25%, transparent); background: color-mix(in srgb, var(--card) 80%, transparent); font-weight:800; color:color-mix(in srgb, var(--text) 85%, var(--muted)); }
+    .right{ display:flex; gap:8px; align-items:center; flex:0 0 auto; }
+    .status{ display:flex; align-items:center; gap:8px; padding:6px 10px; border-radius:999px; border:1px solid var(--line); background: color-mix(in srgb, var(--card) 88%, transparent); box-shadow:var(--shadow); font-size:.85rem; color:color-mix(in srgb, var(--text) 85%, var(--muted)); }
+    .dot{ width:10px; height:10px; border-radius:999px; background:var(--muted); }
+    .dot.ok{ background:color-mix(in srgb, var(--ok) 85%, white); }
+    .dot.warn{ background:color-mix(in srgb, var(--warn) 92%, white); }
+    .dot.bad{ background:color-mix(in srgb, var(--danger) 92%, white); }
+    .btn{
+      height:var(--tap); padding:0 14px; border-radius:14px; border:1px solid var(--line);
+      background: color-mix(in srgb, var(--card) 92%, transparent);
+      box-shadow:var(--shadow); cursor:pointer; font-weight:900;
+      display:inline-flex; align-items:center; gap:10px; user-select:none;
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn:active{ transform: translateY(1px); }
+    .btn:focus-visible{ outline:none; box-shadow: 0 0 0 4px var(--focus), var(--shadow); }
+    .btn.pri{ background:linear-gradient(135deg,var(--pri),var(--pri2)); color:#fff; border-color: color-mix(in srgb, var(--pri) 35%, transparent); }
+    .btn.small{ height:calc(var(--tap) - 10px); padding:0 10px; border-radius:12px; font-size:.9rem; }
+    .grid{ display:grid; gap:14px; }
+    .card{
+      background: color-mix(in srgb, var(--card) 92%, transparent);
+      border:1px solid var(--line);
+      border-radius:var(--r);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .card-h{
+      padding:14px; border-bottom:1px solid var(--line);
+      display:flex; justify-content:space-between; gap:12px; align-items:flex-start;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--card) 92%, transparent), transparent);
+    }
+    .card-h h2{ margin:0; font-size:1rem; font-weight:950; letter-spacing:-.01em; }
+    .card-b{ padding:14px; }
+    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .sep{ height:1px; background:var(--line); margin:14px 0; }
+    .help{ color:var(--muted); font-size:.92rem; line-height:1.4; }
+    .field{ display:flex; flex-direction:column; gap:6px; min-width:170px; }
+    .field span{ font-size:.85rem; font-weight:900; color:color-mix(in srgb, var(--text) 78%, var(--muted)); }
+    input, select, textarea{
+      height:var(--tap); border-radius:14px; padding:0 12px; border:1px solid var(--line);
+      background: color-mix(in srgb, var(--card) 92%, transparent);
+      outline:none;
+    }
+    textarea{ height:auto; min-height:92px; padding:10px 12px; resize:vertical; }
+    input:focus, select:focus, textarea:focus{ box-shadow:0 0 0 4px var(--focus); border-color: color-mix(in srgb, var(--pri) 35%, var(--line)); }
+    .kpi{ display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:10px; }
+    @media (min-width: 760px){ .kpi{ grid-template-columns: repeat(5, minmax(0,1fr)); } }
+    .kpi .box{
+      border:1px solid var(--line); border-radius:16px; padding:12px; box-shadow:var(--shadow);
+      background: color-mix(in srgb, var(--card) 92%, transparent);
+      display:flex; flex-direction:column; gap:6px; min-height:70px; justify-content:space-between;
+    }
+    .kpi .lbl{ font-size:.85rem; font-weight:900; color:var(--muted); }
+    .kpi .val{ font-size:1.05rem; font-weight:950; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .list{ display:grid; gap:10px; }
+    .item{ border:1px solid var(--line); border-radius:16px; padding:12px; box-shadow:var(--shadow); background: color-mix(in srgb, var(--card) 92%, transparent); }
+    .item .top{ display:flex; justify-content:space-between; gap:10px; align-items:flex-start; }
+    .item h3{ margin:0; font-size:1rem; font-weight:950; }
+    .meta{ color:var(--muted); font-size:.86rem; display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:6px; }
+    .pill{ padding:2px 8px; border-radius:999px; border:1px solid var(--line); font-weight:900; font-size:.8rem; }
+    .pill.pri{ border-color: color-mix(in srgb, var(--pri) 40%, var(--line)); }
+    table{ width:100%; border-collapse:collapse; border:1px solid var(--line); border-radius:16px; overflow:hidden; box-shadow:var(--shadow); background: color-mix(in srgb, var(--card) 92%, transparent); }
+    th,td{ padding:10px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; font-size:.92rem; }
+    th{ font-size:.85rem; color:var(--muted); font-weight:950; background: linear-gradient(180deg, color-mix(in srgb, var(--card) 92%, transparent), transparent); }
+    tr:last-child td{ border-bottom:none; }
+    .right-align{ text-align:right; }
+    .small{ font-size:.86rem; color:var(--muted); }
+    .acc{ border:1px solid var(--line); border-radius:var(--r); box-shadow:var(--shadow); background: color-mix(in srgb, var(--card) 92%, transparent); overflow:hidden; }
+    .acc button{
+      width:100%; border:none; background:transparent; padding:14px; cursor:pointer; text-align:left;
+      display:flex; justify-content:space-between; gap:12px; align-items:center;
+      font-weight:950;
+    }
+    .acc .sub{ margin:0; color:var(--muted); font-size:.88rem; font-weight:800; }
+    .acc .body{ border-top:1px solid var(--line); padding:14px; display:none; }
+    .acc[data-open="yes"] .body{ display:block; }
+    .nav{
+      position:fixed; left:0; right:0; bottom:0; z-index:40;
+      background: color-mix(in srgb, var(--card) 92%, transparent);
+      border-top:1px solid var(--line);
+      backdrop-filter: blur(10px);
+      padding:8px 10px calc(8px + env(safe-area-inset-bottom));
+      display:flex; gap:8px;
+    }
+    .nav button{
+      flex:1 1 0; height:calc(var(--tap) + 6px); border-radius:16px; border:1px solid var(--line);
+      background:transparent; cursor:pointer; font-weight:950; color:var(--muted);
+      display:flex; flex-direction:column; justify-content:center; align-items:center; gap:4px;
+    }
+    .nav button.active{
+      background: color-mix(in srgb, var(--pri) 16%, transparent);
+      border-color: color-mix(in srgb, var(--pri) 30%, var(--line));
+      color:var(--text);
+    }
+    dialog{ width:min(720px, calc(100% - 16px)); border:1px solid var(--line); border-radius:18px; box-shadow:var(--shadow); background:var(--card); padding:0; overflow:hidden; }
+    dialog::backdrop{ background: rgba(0,0,0,.35); backdrop-filter: blur(3px); }
+    .dlg-h{ padding:14px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; gap:12px; }
+    .dlg-h h3{ margin:0; font-size:1rem; font-weight:950; }
+    .dlg-b{ padding:14px; }
+    .dlg-f{ padding:14px; border-top:1px solid var(--line); display:flex; justify-content:flex-end; gap:10px; }
+    .err{ color: color-mix(in srgb, var(--danger) 88%, var(--text)); font-weight:900; font-size:.88rem; }
+    .hidden{ display:none!important; }
+    .toastWrap{
+      position:fixed; left:50%; transform:translateX(-50%); bottom:86px; z-index:60;
+      width:min(560px, calc(100% - 20px)); display:flex; flex-direction:column; gap:10px;
+      pointer-events:none;
+    }
+    .toast{
+      pointer-events:auto;
+      border:1px solid var(--line); background: color-mix(in srgb, var(--card) 92%, transparent);
+      box-shadow:var(--shadow); border-radius:16px; padding:12px;
+      display:flex; justify-content:space-between; gap:12px; align-items:flex-start;
+    }
+    .toast b{ font-weight:950; }
+    .footer{ text-align:center; padding:18px 10px; color:var(--muted); font-weight:800; }
+    @media print{
+      header,.nav,.toastWrap,.btn,.acc button{ display:none!important; }
+      body{ background:#fff!important; color:#000!important; }
+      .wrap{ padding:0!important; max-width:none!important; }
+      .card,.acc,table{ box-shadow:none!important; border:1px solid #ddd!important; }
+      .footer{ position:fixed; bottom:0; left:0; right:0; padding:8px 12px; font-size:12px; color:#333; border-top:1px solid #ddd; }
+      a{ color:#000!important; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="bar">
+      <div class="left">
+        <div class="logo" aria-hidden="true">₪</div>
+        <div class="title">
+          <h1 id="hdrClub">Pencipta Penyata Kewangan Kelab</h1>
+          <div class="sub">
+            <span class="tag" id="hdrPeriod">Tempoh: Tiada</span>
+            <span class="tag" id="hdrMode">Mod Ringkas</span>
+            <span class="tag" id="hdrRole">Paparan: Bendahari</span>
+          </div>
         </div>
       </div>
-      <div class="isi-kad">
-        <div class="baris" style="justify-content:space-between;">
-          <div class="baris baris-rapat">
-            <span class="tag" id="tagTempohSemasa">Tempoh Semasa: Tiada</span>
-            <span class="tag" id="tagPeranan">Paparan: Bendahari</span>
-          </div>
-
-          <div class="baris baris-rapat">
-            <label class="medan pilih-tempoh">
-              <span>Tempoh Laporan</span>
-              <select class="pilih-kecil" id="pilihTempohSemasa" aria-label="Pilih Tempoh Laporan Semasa"></select>
-            </label>
-          </div>
+      <div class="right">
+        <div class="status" aria-live="polite">
+          <span class="dot" id="saveDot"></span>
+          <span id="saveText">Memuatkan...</span>
         </div>
-
-        <div class="ruang"></div>
-
-        <div class="kpi" id="kpiUtama">
-          <div class="kotak">
-            <div class="label">Jumlah Pendapatan</div>
-            <div class="nilai" id="kpiPendapatan">RM 0</div>
-          </div>
-          <div class="kotak">
-            <div class="label">Jumlah Perbelanjaan</div>
-            <div class="nilai" id="kpiPerbelanjaan">RM 0</div>
-          </div>
-          <div class="kotak">
-            <div class="label">Surplus/Defisit Bersih <span class="info" id="infoSurplus" title="Surplus = Pendapatan lebih daripada perbelanjaan. Defisit = Perbelanjaan lebih daripada pendapatan.">i</span></div>
-            <div class="nilai" id="kpiSurplus">RM 0</div>
-          </div>
-          <div class="kotak">
-            <div class="label">Baki Tunai</div>
-            <div class="nilai" id="kpiTunai">RM 0</div>
-          </div>
-          <div class="kotak">
-            <div class="label">Baki Bank</div>
-            <div class="nilai" id="kpiBank">RM 0</div>
-          </div>
-        </div>
-
-        <div class="ruang"></div>
-
-        <div class="baris">
-          <button class="butang butang-utama" id="btnTambahTransaksiUtama" type="button">
-            <span class="ikon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-            </span>
-            Tambah Transaksi
-          </button>
-
-          <button class="butang" id="btnLihatLaporanUtama" type="button">
-            <span class="ikon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none"><path d="M4 4h16v16H4z" stroke="currentColor" stroke-width="2"/><path d="M7 14h3v3H7zM11 10h3v7h-3zM15 7h3v10h-3z" fill="currentColor" opacity=".25"/><path d="M7 14h3v3H7zM11 10h3v7h-3zM15 7h3v10h-3z" stroke="currentColor" stroke-width="2"/></svg>
-            </span>
-            Lihat Laporan
-          </button>
-
-          <button class="butang" id="btnSandarUtama" type="button">
-            <span class="ikon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none"><path d="M7 8l5-5 5 5M12 3v12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 21h14a2 2 0 0 0 2-2v-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M3 14v5a2 2 0 0 0 2 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-            </span>
-            Sandarkan/Kongsi
-          </button>
-        </div>
-
-        <div class="pembahagi"></div>
-
-        <div class="baris" style="justify-content:space-between;">
-          <h3 style="margin:0; font-size:1rem; font-weight:900;">Transaksi Terkini</h3>
-          <span class="kapsyen" id="kapsyenTerkini">10 terakhir bagi tempoh semasa</span>
-        </div>
-
-        <div class="ruang"></div>
-
-        <div id="senaraiTerkini" class="senarai-kad"></div>
-        <div id="tiadaTerkini" class="bantuan">Tiada transaksi untuk dipaparkan.</div>
+        <button class="btn small" id="btnQuickAdd" type="button" title="Tambah transaksi">Tambah</button>
+        <button class="btn small" id="btnQuickBackup" type="button" title="Sandaran / Kongsi">Sandar</button>
       </div>
     </div>
+  </header>
 
-    <div class="accordion">
-      <button class="acc-tajuk" type="button" aria-expanded="false" aria-controls="accPanduanCepat" id="btnAccPanduanCepat">
-        <span class="acc-kiri">
-          <span>Panduan Cepat</span>
-          <div class="acc-sub">4 langkah mudah untuk mula guna</div>
-        </span>
-        <svg class="acc-ikon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <div class="acc-kandungan" id="accPanduanCepat" data-buka="tidak">
-        <ol style="margin:0; padding-left: 18px;">
-          <li><b>Cipta Tempoh Laporan</b> (contoh: 2025) di menu <b>Tetapan</b> atau <b>Mod Lanjutan</b> → Tempoh.</li>
-          <li><b>Import Akaun Contoh</b> untuk mula cepat (Pendapatan & Perbelanjaan).</li>
-          <li><b>Masukkan Transaksi</b> (tarikh, amaun, akaun, Tunai/Bank).</li>
-          <li><b>Lihat Laporan</b>, <b>Cetak</b>, atau <b>Sandarkan/Kongsi</b> ringkasan.</li>
-        </ol>
-        <div class="ruang"></div>
-        <div class="baris">
-          <button class="butang butang-utama" id="btnMulakanWizard" type="button">Mulakan Panduan Cepat</button>
-          <button class="butang" id="btnModLatihan" type="button">Aktifkan Mod Latihan</button>
-        </div>
-        <p class="bantuan" style="margin-bottom:0;">Nota: Mod Latihan tidak mengubah data sebenar. Ia sesuai untuk ajar staf/pelajar/komuniti.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- TRANSAKSI -->
-  <section id="halaman-transaksi" class="grid sembunyi">
-    <div class="kad">
-      <div class="tajuk-kad">
-        <h2>Transaksi</h2>
-        <div class="baris baris-rapat">
-          <button class="butang butang-utama" id="btnTambahTransaksi" type="button">
-            <span class="ikon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-            </span>
-            Tambah Transaksi
-          </button>
-          <button class="butang butang-separa" id="btnEksportTransaksiCSV" type="button" title="Eksport senarai transaksi (CSV)">
-            <span class="ikon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none"><path d="M7 8l5-5 5 5M12 3v12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 21h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-            </span>
-            Eksport CSV
-          </button>
-        </div>
-      </div>
-      <div class="isi-kad">
-        <div class="grid" style="gap:10px;">
-          <div class="baris" style="justify-content: space-between;">
-            <label class="medan pilih-tempoh">
-              <span>Tempoh Laporan</span>
-              <select class="pilih-kecil" id="pilihTempohTransaksi"></select>
-            </label>
-
-            <div class="medan" style="max-width: 340px; flex: 1 1 280px;">
-              <label for="carianTransaksi">Carian</label>
-              <input class="input" id="carianTransaksi" placeholder="Contoh: resit 12, jamuan, yuran..." />
-              <div class="bantuan">Carian berdasarkan No. Resit/Rujukan dan Butiran.</div>
+  <div class="wrap">
+    <main>
+      <!-- UTAMA -->
+      <section id="pgHome">
+        <div class="grid">
+          <div class="card">
+            <div class="card-h">
+              <h2>Utama</h2>
+              <div class="row">
+                <label class="field" style="min-width:280px">
+                  <span>Tempoh Laporan</span>
+                  <select id="selPeriodHome"></select>
+                </label>
+              </div>
             </div>
+            <div class="card-b">
+              <div class="kpi">
+                <div class="box"><div class="lbl">Jumlah Pendapatan</div><div class="val" id="kpiIn">RM 0</div></div>
+                <div class="box"><div class="lbl">Jumlah Perbelanjaan</div><div class="val" id="kpiOut">RM 0</div></div>
+                <div class="box"><div class="lbl">Surplus/Defisit</div><div class="val" id="kpiNet">RM 0</div></div>
+                <div class="box"><div class="lbl">Baki Tunai</div><div class="val" id="kpiCash">RM 0</div></div>
+                <div class="box"><div class="lbl">Baki Bank</div><div class="val" id="kpiBank">RM 0</div></div>
+              </div>
 
-            <div class="baris baris-rapat" style="justify-content:flex-end;">
-              <span class="tag" id="tagBilTransaksi">Bilangan: 0</span>
-              <span class="tag" id="tagJumlahDitapis">Jumlah Ditapis: RM 0</span>
+              <div class="sep"></div>
+
+              <div class="row">
+                <button class="btn pri" id="btnAddFromHome" type="button">Tambah Transaksi</button>
+                <button class="btn" id="btnGoReport" type="button">Lihat Laporan</button>
+                <button class="btn" id="btnBackupFromHome" type="button">Sandarkan/Kongsi</button>
+              </div>
+
+              <div class="sep"></div>
+
+              <div class="row" style="justify-content:space-between">
+                <b>Transaksi Terkini</b>
+                <span class="small">10 terakhir bagi tempoh semasa</span>
+              </div>
+              <div style="height:10px"></div>
+              <div id="recentList" class="list"></div>
+              <div id="recentEmpty" class="help">Tiada transaksi untuk dipaparkan.</div>
             </div>
           </div>
 
-          <div class="accordion">
-            <button class="acc-tajuk" type="button" aria-expanded="false" aria-controls="accPenapisLanjutan" id="btnAccPenapis">
-              <span class="acc-kiri">
-                <span>Penapis Lanjutan</span>
-                <div class="acc-sub">Julat tarikh, akaun, jenis akaun, Tunai/Bank</div>
-              </span>
-              <svg class="acc-ikon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div class="acc" id="accGuide" data-open="no">
+            <button type="button" id="btnAccGuide" aria-expanded="false">
+              <div>
+                <div>Panduan Cepat</div>
+                <div class="sub">4 langkah untuk mula guna</div>
+              </div>
+              <span aria-hidden="true">›</span>
             </button>
-            <div class="acc-kandungan" id="accPenapisLanjutan" data-buka="tidak">
-              <div class="grid" style="grid-template-columns: 1fr; gap: 10px;">
-                <div class="baris" style="align-items:flex-end;">
-                  <div class="medan" style="flex: 1 1 180px; max-width: 260px;">
-                    <label for="tarikhMula">Tarikh Mula</label>
-                    <input class="input" id="tarikhMula" type="date" />
-                  </div>
-                  <div class="medan" style="flex: 1 1 180px; max-width: 260px;">
-                    <label for="tarikhTamat">Tarikh Tamat</label>
-                    <input class="input" id="tarikhTamat" type="date" />
-                  </div>
+            <div class="body">
+              <ol style="margin:0; padding-left:18px">
+                <li>Hidupkan <b>Mod Lanjutan</b> di Tetapan.</li>
+                <li>Tambah <b>Tempoh Laporan</b> dan tetapkan baki awal Tunai/Bank jika ada.</li>
+                <li>Import <b>Akaun Contoh (BM)</b> atau tambah akaun sendiri.</li>
+                <li>Masukkan transaksi dan semak <b>Laporan</b>, kemudian sandarkan JSON.</li>
+              </ol>
+              <div style="height:10px"></div>
+              <div class="row">
+                <button class="btn pri" id="btnWizard" type="button">Mulakan Panduan Cepat</button>
+                <button class="btn" id="btnDemo" type="button">Aktifkan Mod Latihan</button>
+              </div>
+              <p class="help" style="margin-bottom:0">Mod Latihan sesuai untuk demo. Ia tidak mengubah data sebenar.</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
-                  <div class="medan" style="flex: 1 1 180px; max-width: 260px;">
-                    <label for="pilihJenisAkaun">Jenis Akaun</label>
-                    <select class="input" id="pilihJenisAkaun">
-                      <option value="">Semua</option>
-                      <option value="Aset">Aset</option>
-                      <option value="Liabiliti">Liabiliti</option>
-                      <option value="Ekuiti">Ekuiti</option>
-                      <option value="Pendapatan">Pendapatan</option>
-                      <option value="Perbelanjaan">Perbelanjaan</option>
-                    </select>
-                  </div>
+      <!-- TRANSAKSI -->
+      <section id="pgTxn" class="hidden">
+        <div class="card">
+          <div class="card-h">
+            <h2>Transaksi</h2>
+            <button class="btn pri" id="btnAddTxn" type="button">Tambah Transaksi</button>
+          </div>
+          <div class="card-b">
+            <div class="row">
+              <label class="field">
+                <span>Tempoh Laporan</span>
+                <select id="selPeriodTxn"></select>
+              </label>
+              <label class="field" style="flex:1 1 240px; min-width:240px">
+                <span>Carian (No. resit / butiran)</span>
+                <input id="qTxn" type="search" placeholder="Contoh: resit 12 / jamuan / yuran" />
+              </label>
+              <button class="btn" id="btnClearQ" type="button">Kosongkan</button>
+            </div>
 
-                  <div class="medan" style="flex: 1 1 220px; min-width: 220px;">
-                    <label for="pilihAkaun">Akaun/Kategori</label>
-                    <select class="input" id="pilihAkaun"></select>
-                  </div>
+            <div style="height:10px"></div>
 
-                  <div class="medan" style="flex: 1 1 180px; max-width: 220px;">
-                    <label for="pilihKaedah">Kaedah Bayaran</label>
-                    <select class="input" id="pilihKaedah">
-                      <option value="">Semua</option>
-                      <option value="Tunai">Tunai</option>
-                      <option value="Bank">Bank</option>
-                    </select>
-                  </div>
-
-                  <div class="medan" style="flex: 1 1 180px; max-width: 220px;">
-                    <label for="susunTarikh">Susun Tarikh</label>
-                    <select class="input" id="susunTarikh">
-                      <option value="menaik">Menaik</option>
-                      <option value="menurun">Menurun</option>
-                    </select>
-                  </div>
-
-                  <button class="butang" id="btnKosongkanPenapis" type="button">Kosongkan</button>
+            <div class="acc" id="accFilter" data-open="no">
+              <button type="button" id="btnAccFilter" aria-expanded="false">
+                <div>
+                  <div>Penapis Lanjutan</div>
+                  <div class="sub">Julat tarikh, akaun, kaedah, susunan</div>
                 </div>
+                <span aria-hidden="true">›</span>
+              </button>
+              <div class="body">
+                <div class="row">
+                  <label class="field"><span>Tarikh mula</span><input id="fStart" type="date"></label>
+                  <label class="field"><span>Tarikh tamat</span><input id="fEnd" type="date"></label>
+                  <label class="field"><span>Jenis Akaun</span>
+                    <select id="fType">
+                      <option value="">Semua</option>
+                      <option>Pendapatan</option><option>Perbelanjaan</option><option>Aset</option><option>Liabiliti</option><option>Ekuiti</option>
+                    </select>
+                  </label>
+                  <label class="field"><span>Akaun/Kategori</span><select id="fAccount"></select></label>
+                  <label class="field"><span>Kaedah Bayaran</span>
+                    <select id="fPay"><option value="">Semua</option><option>Tunai</option><option>Bank</option></select>
+                  </label>
+                  <label class="field"><span>Susun ikut tarikh</span>
+                    <select id="fSort"><option value="desc">Terkini dahulu</option><option value="asc">Terlama dahulu</option></select>
+                  </label>
+                </div>
+                <div style="height:10px"></div>
+                <button class="btn" id="btnResetFilter" type="button">Set Semula Penapis</button>
+              </div>
+            </div>
 
-                <div class="nota">
-                  <b>Nota ringkas:</b> Penapis lanjutan membantu cari transaksi tertentu. Jika anda pengguna komuniti, anda boleh guna carian sahaja.
+            <div class="sep"></div>
+
+            <div class="row" style="justify-content:space-between">
+              <div class="row" style="gap:8px">
+                <span class="tag" id="sumCount">0 transaksi</span>
+                <span class="tag" id="sumIn">Pendapatan: RM 0</span>
+                <span class="tag" id="sumOut">Perbelanjaan: RM 0</span>
+                <span class="tag" id="sumNet">Surplus/Defisit: RM 0</span>
+              </div>
+              <span class="small" id="txnCaption">Dipaparkan mengikut penapis</span>
+            </div>
+
+            <div style="height:10px"></div>
+
+            <div id="txnList" class="list"></div>
+            <div id="txnEmpty" class="help">Tiada transaksi untuk dipaparkan.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- LAPORAN -->
+      <section id="pgReport" class="hidden">
+        <div class="card">
+          <div class="card-h">
+            <h2>Laporan</h2>
+            <div class="row">
+              <label class="field">
+                <span>Tempoh Laporan</span>
+                <select id="selPeriodRpt"></select>
+              </label>
+              <button class="btn" id="btnPrint" type="button">Cetak Laporan</button>
+            </div>
+          </div>
+          <div class="card-b">
+            <div class="acc" id="accPL" data-open="yes">
+              <button type="button" id="btnAccPL" aria-expanded="true">
+                <div>
+                  <div>Penyata Pendapatan (Untung Rugi)</div>
+                  <div class="sub">Pendapatan, perbelanjaan, surplus/defisit</div>
+                </div>
+                <span aria-hidden="true">›</span>
+              </button>
+              <div class="body">
+                <div class="row">
+                  <button class="btn" id="btnCsvPL" type="button">Eksport CSV</button>
+                </div>
+                <div style="height:10px"></div>
+                <div id="rptPL"></div>
+              </div>
+            </div>
+
+            <div style="height:12px"></div>
+
+            <div class="acc" id="accBS" data-open="no">
+              <button type="button" id="btnAccBS" aria-expanded="false">
+                <div>
+                  <div>Penyata Kedudukan Kewangan</div>
+                  <div class="sub">Versi ringkas (single-entry) + rekonsiliasi</div>
+                </div>
+                <span aria-hidden="true">›</span>
+              </button>
+              <div class="body">
+                <div class="row">
+                  <button class="btn" id="btnCsvBS" type="button">Eksport CSV</button>
+                </div>
+                <div style="height:10px"></div>
+                <div id="rptBS"></div>
+                <p class="help" style="margin-bottom:0">Nota: Single-entry tidak semestinya seimbang seperti dua catatan. Semakan rekonsiliasi membantu mengesan ketidaklengkapan transaksi Aset/Liabiliti/Ekuiti.</p>
+              </div>
+            </div>
+
+            <div style="height:12px"></div>
+
+            <div class="acc" id="accCF" data-open="no">
+              <button type="button" id="btnAccCF" aria-expanded="false">
+                <div>
+                  <div>Ringkasan Aliran Tunai</div>
+                  <div class="sub">Inflow/Outflow Tunai & Bank + baki akhir</div>
+                </div>
+                <span aria-hidden="true">›</span>
+              </button>
+              <div class="body">
+                <div class="row">
+                  <button class="btn" id="btnCsvCF" type="button">Eksport CSV</button>
+                </div>
+                <div style="height:10px"></div>
+                <div id="rptCF"></div>
+              </div>
+            </div>
+
+            <div style="height:12px"></div>
+
+            <div class="acc" id="accCompare" data-open="no">
+              <button type="button" id="btnAccCompare" aria-expanded="false">
+                <div>
+                  <div>Perbandingan Multi-Tahun</div>
+                  <div class="sub">Banding 2–5 tempoh + carta ringkas</div>
+                </div>
+                <span aria-hidden="true">›</span>
+              </button>
+              <div class="body">
+                <div class="row">
+                  <button class="btn" id="btnCsvCompare" type="button">Eksport CSV</button>
+                  <label class="row" style="gap:8px"><input type="checkbox" id="togCommon"> <b>Peratus (Common-size)</b></label>
+                </div>
+                <div style="height:10px"></div>
+                <div id="cmpPick" class="list"></div>
+                <div style="height:10px"></div>
+                <div id="cmpTable"></div>
+                <div style="height:10px"></div>
+                <div class="item">
+                  <b>Carta ringkas (Surplus/Defisit)</b>
+                  <canvas id="cSur" height="160" style="width:100%"></canvas>
+                  <div class="small">Carta guna label & corak (bukan warna sahaja).</div>
                 </div>
               </div>
             </div>
           </div>
+        </div>
+      </section>
 
-          <div class="kpi" style="grid-template-columns: repeat(2, minmax(0, 1fr));">
-            <div class="kotak">
-              <div class="label">Jumlah Pendapatan Ditapis</div>
-              <div class="nilai" id="jumlahPendapatanDitapis">RM 0</div>
+      <!-- TETAPAN -->
+      <section id="pgSettings" class="hidden">
+        <div class="grid">
+          <div class="card">
+            <div class="card-h">
+              <h2>Tetapan</h2>
+              <label class="row" style="gap:8px"><input type="checkbox" id="togAdvanced"> <b>Mod Lanjutan</b></label>
             </div>
-            <div class="kotak">
-              <div class="label">Jumlah Perbelanjaan Ditapis</div>
-              <div class="nilai" id="jumlahPerbelanjaanDitapis">RM 0</div>
-            </div>
-          </div>
+            <div class="card-b">
+              <div class="row">
+                <label class="field" style="flex:1 1 240px; min-width:240px">
+                  <span>Nama Kelab</span>
+                  <input id="clubName" type="text" placeholder="Contoh: Kelab Staf / Kelab Pelajar" />
+                </label>
+                <label class="field">
+                  <span>No. Pendaftaran (opsyenal)</span>
+                  <input id="regNo" type="text" placeholder="PPM / ROS / dll." />
+                </label>
+              </div>
+              <div style="height:10px"></div>
+              <div class="row">
+                <label class="field" style="flex:1 1 240px; min-width:240px"><span>Disediakan oleh (Nama)</span><input id="prepBy" type="text" placeholder="Bendahari" /></label>
+                <label class="field" style="flex:1 1 240px; min-width:240px"><span>Jawatan</span><input id="prepRole" type="text" placeholder="Bendahari / AJK" /></label>
+              </div>
 
-          <div class="sembunyi-besar" id="jadualTransaksiWrap">
-            <table class="jadual" aria-label="Senarai transaksi">
-              <thead>
-                <tr>
-                  <th>Tarikh</th>
-                  <th>No. Resit/Rujukan</th>
-                  <th>Butiran</th>
-                  <th>Akaun/Kategori</th>
-                  <th class="pusat">Tunai/Bank</th>
-                  <th class="kanan">Amaun</th>
-                  <th class="pusat">Tindakan</th>
-                </tr>
-              </thead>
-              <tbody id="tbodyTransaksi"></tbody>
-            </table>
-            <div class="bantuan" id="tiadaTransaksiJadual">Tiada transaksi untuk dipaparkan.</div>
-          </div>
+              <div class="sep"></div>
 
-          <div class="sembunyi-kecil" id="kadTransaksiWrap">
-            <div class="senarai-kad" id="kadTransaksi"></div>
-            <div class="bantuan" id="tiadaTransaksiKad">Tiada transaksi untuk dipaparkan.</div>
-          </div>
+              <div class="row">
+                <label class="field"><span>Simbol mata wang</span><input id="sym" type="text" value="RM" /></label>
+                <label class="field"><span>Perpuluhan</span><select id="dec"><option value="2">2</option><option value="0">0</option></select></label>
+                <label class="field"><span>Paparan (Jenis pengguna)</span>
+                  <select id="role">
+                    <option>Bendahari</option><option>AJK</option><option>Ahli/Pelajar</option>
+                  </select>
+                </label>
+                <label class="field"><span>Tema</span>
+                  <select id="theme"><option value="light">Cerah</option><option value="dark">Gelap</option></select>
+                </label>
+              </div>
 
-        </div>
-      </div>
-    </div>
-  </section>
+              <div style="height:10px"></div>
 
-  <!-- LAPORAN -->
-  <section id="halaman-laporan" class="grid sembunyi">
-    <div class="kad">
-      <div class="tajuk-kad">
-        <h2>Laporan</h2>
-        <div class="baris baris-rapat">
-          <button class="butang" id="btnCetakLaporan" type="button">
-            <span class="ikon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none"><path d="M6 9V4h12v5" stroke="currentColor" stroke-width="2"/><path d="M6 18H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-1" stroke="currentColor" stroke-width="2"/><path d="M6 14h12v6H6z" stroke="currentColor" stroke-width="2"/></svg>
-            </span>
-            Cetak Laporan
-          </button>
-          <button class="butang" id="btnEksportLaporanCSV" type="button" title="Eksport laporan semasa (CSV)">
-            <span class="ikon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none"><path d="M7 8l5-5 5 5M12 3v12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 21h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-            </span>
-            Eksport CSV
-          </button>
-        </div>
-      </div>
-      <div class="isi-kad">
-        <div class="baris" style="justify-content: space-between;">
-          <label class="medan pilih-tempoh">
-            <span>Tempoh Laporan</span>
-            <select class="pilih-kecil" id="pilihTempohLaporan"></select>
-          </label>
-
-          <label class="medan" style="max-width: 340px;">
-            <span>Pilih Laporan</span>
-            <select class="input" id="pilihJenisLaporan" aria-label="Pilih jenis laporan">
-              <option value="untungRugi">Penyata Pendapatan (Untung Rugi)</option>
-              <option value="kedudukan">Penyata Kedudukan Kewangan</option>
-              <option value="aliran">Ringkasan Aliran Tunai</option>
-            </select>
-          </label>
-
-          <div class="baris baris-rapat">
-            <span class="tag" id="tagLaporanRingkas">Sedia untuk dicetak</span>
-          </div>
-        </div>
-
-        <div class="ruang"></div>
-
-        <!-- laporan semasa -->
-        <div id="laporanSemasa"></div>
-
-        <div class="ruang"></div>
-
-        <!-- pecahan bulanan -->
-        <div class="accordion" id="accPecahanBulananWrap">
-          <button class="acc-tajuk" type="button" aria-expanded="false" aria-controls="accPecahanBulanan" id="btnAccPecahan">
-            <span class="acc-kiri">
-              <span>Pecahan Bulanan</span>
-              <div class="acc-sub">Lihat trend bulanan jika data mencukupi</div>
-            </span>
-            <svg class="acc-ikon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>
-          <div class="acc-kandungan" id="accPecahanBulanan" data-buka="tidak">
-            <div id="pecahanBulanan"></div>
-            <p class="bantuan" id="pecahanBulananNota" style="margin-bottom:0;">Jika tiada data, pecahan bulanan tidak dipaparkan.</p>
-          </div>
-        </div>
-
-        <div class="ruang"></div>
-
-        <!-- perbandingan multi-tahun -->
-        <div class="accordion">
-          <button class="acc-tajuk" type="button" aria-expanded="false" aria-controls="accBanding" id="btnAccBanding">
-            <span class="acc-kiri">
-              <span>Perbandingan Multi-Tahun</span>
-              <div class="acc-sub">Banding 2–5 tempoh + carta trend</div>
-            </span>
-            <svg class="acc-ikon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>
-          <div class="acc-kandungan" id="accBanding" data-buka="tidak">
-            <div class="grid" style="gap: 12px;">
-              <div class="kad" style="box-shadow:none;">
-                <div class="isi-kad" style="padding: 0;">
-                  <p class="kapsyen" style="margin: 0 0 8px 0;">
-                    Pilih 2 hingga 5 Tempoh Laporan untuk dibandingkan. Carta mesra buta warna: label nilai + corak/garis berbeza.
-                  </p>
-                  <div class="kipas" id="pilihanBanding"></div>
-                  <div class="ruang"></div>
-                  <div class="baris">
-                    <label class="medan" style="max-width: 280px;">
-                      <span>Paparan</span>
-                      <select class="input" id="pilihBandingPaparan">
-                        <option value="nilai">Nilai (RM)</option>
-                        <option value="peratus">Peratus (Common-size)</option>
+              <div class="acc" id="accA11y" data-open="no">
+                <button type="button" id="btnAccA11y" aria-expanded="false">
+                  <div>
+                    <div>Aksesibiliti</div>
+                    <div class="sub">Kontras tinggi, saiz fon, jarak sentuhan, animasi</div>
+                  </div>
+                  <span aria-hidden="true">›</span>
+                </button>
+                <div class="body">
+                  <div class="row">
+                    <label class="row" style="gap:8px"><input type="checkbox" id="hiContrast"> <b>Kontras Tinggi</b></label>
+                    <label class="row" style="gap:8px"><input type="checkbox" id="reduceMotion"> <b>Kurangkan Animasi</b></label>
+                  </div>
+                  <div style="height:10px"></div>
+                  <div class="row">
+                    <label class="field"><span>Saiz Fon</span>
+                      <select id="fontSize">
+                        <option value="normal">Normal</option>
+                        <option value="big">Besar</option>
+                        <option value="xbig">Sangat Besar</option>
                       </select>
                     </label>
-                    <button class="butang" id="btnEksportBandingCSV" type="button">Eksport CSV Perbandingan</button>
+                    <label class="field"><span>Jarak Sentuhan</span>
+                      <select id="tapSize"><option value="normal">Normal</option><option value="big">Besar</option></select>
+                    </label>
                   </div>
                 </div>
               </div>
 
-              <div id="jadualBandingWrap" class="sembunyi">
-                <table class="jadual" aria-label="Jadual perbandingan multi-tahun">
-                  <thead id="theadBanding"></thead>
-                  <tbody id="tbodyBanding"></tbody>
-                </table>
-              </div>
+              <div style="height:12px"></div>
 
-              <div class="grid" style="grid-template-columns: 1fr; gap: 12px;">
-                <div>
-                  <p style="margin: 0 0 8px 0; font-weight: 900;">Carta 1: Surplus/Defisit Bersih mengikut tempoh</p>
-                  <canvas class="kanvas" id="kanvasSurplus" width="900" height="320" aria-label="Carta surplus/defisit bersih mengikut tempoh"></canvas>
-                </div>
-                <div>
-                  <p style="margin: 0 0 8px 0; font-weight: 900;">Carta 2: Pendapatan vs Perbelanjaan mengikut tempoh</p>
-                  <canvas class="kanvas" id="kanvasPendapatanPerbelanjaan" width="900" height="320" aria-label="Carta pendapatan dan perbelanjaan mengikut tempoh"></canvas>
-                </div>
-              </div>
-
-              <div id="notaBanding" class="bantuan">Pilih sekurang-kurangnya 2 tempoh untuk memaparkan jadual dan carta.</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="ruang"></div>
-
-        <div id="amaranRekonsiliasi" class="amaran-kotak sembunyi"></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- TETAPAN -->
-  <section id="halaman-tetapan" class="grid sembunyi">
-    <div class="grid grid-2">
-      <div class="kad">
-        <div class="tajuk-kad">
-          <h2>Tetapan</h2>
-          <div class="baris baris-rapat">
-            <button class="butang butang-separa" id="btnBukaProfil" type="button">Profil Kelab</button>
-            <button class="butang butang-separa" id="btnBukaTempoh" type="button">Tempoh</button>
-            <button class="butang butang-separa" id="btnBukaAkaun" type="button">Akaun</button>
-          </div>
-        </div>
-        <div class="isi-kad">
-          <div class="accordion">
-            <button class="acc-tajuk" type="button" aria-expanded="false" aria-controls="accAkses" id="btnAccAkses">
-              <span class="acc-kiri">
-                <span>Aksesibiliti</span>
-                <div class="acc-sub">Kontras tinggi, fon besar, jarak sentuhan, kurangkan animasi</div>
-              </span>
-              <svg class="acc-ikon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-            <div class="acc-kandungan" id="accAkses" data-buka="tidak">
-              <div class="grid" style="grid-template-columns: 1fr; gap: 10px;">
-                <label class="medan">
-                  <span>Saiz Fon</span>
-                  <select class="input" id="tetFon">
-                    <option value="normal">Normal</option>
-                    <option value="besar">Besar</option>
-                    <option value="sangat-besar">Sangat Besar</option>
-                  </select>
-                </label>
-
-                <label class="medan">
-                  <span>Jarak Sentuhan</span>
-                  <select class="input" id="tetSentuh">
-                    <option value="normal">Normal</option>
-                    <option value="besar">Besar</option>
-                  </select>
-                </label>
-
-                <div class="baris">
-                  <label class="baris" style="gap:10px;">
-                    <input type="checkbox" id="tetKontras" />
-                    <span>Kontras Tinggi</span>
+              <div class="acc" id="accBackup" data-open="no">
+                <button type="button" id="btnAccBackup" aria-expanded="false">
+                  <div>
+                    <div>Sandaran & Kongsi</div>
+                    <div class="sub">Sandar JSON, import, ringkasan WhatsApp</div>
+                  </div>
+                  <span aria-hidden="true">›</span>
+                </button>
+                <div class="body">
+                  <div class="row">
+                    <button class="btn pri" id="btnBackup" type="button">Sandarkan Sekarang (JSON)</button>
+                    <button class="btn" id="btnShareBackup" type="button">Kongsi Sandaran</button>
+                  </div>
+                  <div style="height:10px"></div>
+                  <div class="row">
+                    <button class="btn" id="btnGenSummary" type="button">Jana Ringkasan</button>
+                    <button class="btn" id="btnCopySummary" type="button">Salin Ringkasan</button>
+                    <button class="btn" id="btnWhatsApp" type="button">Buka WhatsApp</button>
+                  </div>
+                  <div style="height:10px"></div>
+                  <label class="field" style="width:100%">
+                    <span>Ringkasan (untuk kongsi)</span>
+                    <textarea id="summaryText" placeholder="Tekan “Jana Ringkasan” untuk bina teks ringkas bagi tempoh semasa."></textarea>
                   </label>
-                  <label class="baris" style="gap:10px;">
-                    <input type="checkbox" id="tetButaWarna" />
-                    <span>Mesra Buta Warna</span>
-                  </label>
-                  <label class="baris" style="gap:10px;">
-                    <input type="checkbox" id="tetKurangAnim" />
-                    <span>Kurangkan Animasi</span>
-                  </label>
-                </div>
 
-                <div class="nota">
-                  <b>Tip:</b> Jika pengguna warga emas atau telefon kecil, pilih “Saiz Fon: Besar” dan “Jarak Sentuhan: Besar”.
-                </div>
-              </div>
-            </div>
-          </div>
+                  <div class="sep"></div>
 
-          <div class="ruang"></div>
-
-          <div class="accordion">
-            <button class="acc-tajuk" type="button" aria-expanded="false" aria-controls="accTema" id="btnAccTema">
-              <span class="acc-kiri">
-                <span>Tema</span>
-                <div class="acc-sub">Cerah, Gelap, Neutral</div>
-              </span>
-              <svg class="acc-ikon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-            <div class="acc-kandungan" id="accTema" data-buka="tidak">
-              <label class="medan">
-                <span>Pilih Tema</span>
-                <select class="input" id="tetTema">
-                  <option value="cerah">Tema Cerah</option>
-                  <option value="gelap">Tema Gelap</option>
-                  <option value="neutral">Tema Neutral</option>
-                </select>
-                <div class="bantuan">Nota: “Kontras Tinggi” boleh mengatasi tema ini.</div>
-              </label>
-            </div>
-          </div>
-
-          <div class="ruang"></div>
-
-          <div class="accordion">
-            <button class="acc-tajuk" type="button" aria-expanded="false" aria-controls="accPaparan" id="btnAccPaparan">
-              <span class="acc-kiri">
-                <span>Paparan Pengguna</span>
-                <div class="acc-sub">Bendahari / AJK / Ahli-Pelajar (paparan sahaja)</div>
-              </span>
-              <svg class="acc-ikon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-            <div class="acc-kandungan" id="accPaparan" data-buka="tidak">
-              <label class="medan">
-                <span>Pilih Paparan</span>
-                <select class="input" id="tetPeranan">
-                  <option value="Bendahari">Bendahari (penuh)</option>
-                  <option value="AJK">AJK (kurang fungsi padam)</option>
-                  <option value="Ahli/Pelajar">Ahli/Pelajar (fokus lihat laporan)</option>
-                </select>
-                <div class="bantuan">Nota: Ini hanya menukar paparan, bukan keselamatan sebenar.</div>
-              </label>
-            </div>
-          </div>
-
-          <div class="ruang"></div>
-
-          <div class="accordion">
-            <button class="acc-tajuk" type="button" aria-expanded="false" aria-controls="accSandar" id="btnAccSandar">
-              <span class="acc-kiri">
-                <span>Sandaran & Kongsi</span>
-                <div class="acc-sub">Sandarkan JSON, kongsi ringkasan WhatsApp, import data</div>
-              </span>
-              <svg class="acc-ikon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-            <div class="acc-kandungan" id="accSandar" data-buka="tidak">
-              <div class="baris">
-                <button class="butang butang-utama" id="btnSandarJSON" type="button">Sandarkan Sekarang (JSON)</button>
-                <button class="butang" id="btnKongsiSandar" type="button">Kongsi Sandaran</button>
-                <button class="butang" id="btnPulihSnapshot" type="button">Pulihkan Snapshot</button>
-              </div>
-
-              <div class="ruang"></div>
-
-              <div class="grid" style="grid-template-columns: 1fr; gap: 10px;">
-                <label class="medan">
-                  <span>Import Data (JSON)</span>
-                  <input class="input" id="failImport" type="file" accept="application/json" />
-                  <div class="bantuan">Anda boleh pilih “Gabung” atau “Ganti” selepas preview.</div>
-                </label>
-
-                <div class="baris">
-                  <button class="butang" id="btnKongsiRingkasan" type="button">Kongsi Ringkasan</button>
-                  <button class="butang" id="btnSalinRingkasan" type="button">Salin Ringkasan</button>
-                  <a class="butang" id="pautanWhatsApp" href="#" target="_blank" rel="noopener" aria-label="Buka WhatsApp dengan teks ringkasan">Buka WhatsApp</a>
-                </div>
-
-                <div class="pemapar-teks" id="paparRingkasan" aria-label="Teks ringkasan untuk dikongsi"></div>
-
-                <div class="nota">
-                  <b>Nota:</b> Data sebenar disimpan dalam peranti (localStorage). Sandaran JSON disyorkan secara berkala.
+                  <div class="row">
+                    <label class="field" style="flex:1 1 260px; min-width:260px">
+                      <span>Import JSON</span>
+                      <input id="importFile" type="file" accept="application/json" />
+                    </label>
+                    <label class="field">
+                      <span>Kaedah Import</span>
+                      <select id="importMode"><option value="merge">Gabung</option><option value="replace">Ganti</option></select>
+                    </label>
+                    <button class="btn" id="btnImport" type="button">Import</button>
+                  </div>
+                  <div style="height:10px"></div>
+                  <div id="importPreview" class="help"></div>
                 </div>
               </div>
+
+              <div style="height:12px"></div>
+
+              <div class="acc" id="accAdvanced" data-open="no">
+                <button type="button" id="btnAccAdvanced" aria-expanded="false">
+                  <div>
+                    <div>Tetapan Lanjutan</div>
+                    <div class="sub">Tempoh laporan, akaun/kategori, contoh data, set semula</div>
+                  </div>
+                  <span aria-hidden="true">›</span>
+                </button>
+                <div class="body">
+                  <div id="advLocked" class="help">Mod Lanjutan dimatikan. Hidupkan “Mod Lanjutan” untuk mengurus Tempoh Laporan dan Akaun/Kategori.</div>
+                  <div id="advOpen" class="hidden">
+                    <div class="acc" id="accPeriods" data-open="no" style="margin-bottom:12px">
+                      <button type="button" id="btnAccPeriods" aria-expanded="false">
+                        <div>
+                          <div>Tempoh Laporan</div>
+                          <div class="sub">Tambah/ubah/padam tempoh + baki awal Tunai/Bank</div>
+                        </div>
+                        <span aria-hidden="true">›</span>
+                      </button>
+                      <div class="body">
+                        <button class="btn pri" id="btnAddPeriod" type="button">Tambah Tempoh</button>
+                        <div style="height:10px"></div>
+                        <div id="periodList" class="list"></div>
+                        <div id="periodEmpty" class="help">Tiada tempoh laporan. Tambah satu untuk mula.</div>
+                      </div>
+                    </div>
+
+                    <div class="acc" id="accAccounts" data-open="no" style="margin-bottom:12px">
+                      <button type="button" id="btnAccAccounts" aria-expanded="false">
+                        <div>
+                          <div>Akaun/Kategori</div>
+                          <div class="sub">Tambah/ubah/padam akaun + import akaun contoh (BM)</div>
+                        </div>
+                        <span aria-hidden="true">›</span>
+                      </button>
+                      <div class="body">
+                        <div class="row">
+                          <button class="btn pri" id="btnAddAccount" type="button">Tambah Akaun</button>
+                          <button class="btn" id="btnImportCOA" type="button">Import Akaun Contoh (BM)</button>
+                        </div>
+                        <div style="height:10px"></div>
+                        <div class="row">
+                          <label class="field" style="flex:1 1 240px; min-width:240px">
+                            <span>Carian Akaun/Kategori</span>
+                            <input id="qAcct" type="search" placeholder="Contoh: yuran, jamuan, pengangkutan" />
+                          </label>
+                          <label class="field">
+                            <span>Penapis Jenis</span>
+                            <select id="fAcctType">
+                              <option value="">Semua</option>
+                              <option>Pendapatan</option><option>Perbelanjaan</option><option>Aset</option><option>Liabiliti</option><option>Ekuiti</option>
+                            </select>
+                          </label>
+                        </div>
+                        <div style="height:10px"></div>
+                        <div id="acctList" class="list"></div>
+                        <div id="acctEmpty" class="help">Tiada akaun/kategori. Import akaun contoh untuk mula cepat.</div>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <button class="btn" id="btnDemoData" type="button">Masukkan Contoh Data (Demo)</button>
+                      <button class="btn" id="btnResetAll" type="button" style="border-color: color-mix(in srgb, var(--danger) 45%, var(--line)); color: color-mix(in srgb, var(--danger) 88%, var(--text));">Set Semula Semua Data</button>
+                    </div>
+                    <p class="help" style="margin-bottom:0">Amaran: Set Semula akan memadam data peranti. Sandarkan JSON sebelum set semula.</p>
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
 
-          <div class="ruang"></div>
-
-          <div class="accordion">
-            <button class="acc-tajuk" type="button" aria-expanded="false" aria-controls="accMuatTurun" id="btnAccMuatTurun">
-              <span class="acc-kiri">
-                <span>Sandaran & Muat Turun</span>
-                <div class="acc-sub">Apa yang dimuat turun selepas guna aplikasi</div>
-              </span>
-              <svg class="acc-ikon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div class="acc" id="accHelp" data-open="no">
+            <button type="button" id="btnAccHelp" aria-expanded="false">
+              <div>
+                <div>Bantuan</div>
+                <div class="sub">Glosari, sandaran, cetak, perbandingan</div>
+              </div>
+              <span aria-hidden="true">›</span>
             </button>
-            <div class="acc-kandungan" id="accMuatTurun" data-buka="tidak">
-              <ul style="margin:0; padding-left: 18px;">
-                <li><b>Sandaran Penuh (JSON)</b>: mengandungi profil kelab, tempoh laporan, carta akaun, transaksi, dan tetapan. Sesuai untuk tukar telefon/laptop atau serah tugas bendahari. Guna semula melalui <b>Import JSON</b>.</li>
-                <li><b>Eksport Laporan (CSV)</b>: fail jadual laporan untuk dibuka dalam Excel/Google Sheets (buat graf, semak). Nota: satu laporan = satu fail CSV.</li>
-                <li><b>Cetak / Simpan PDF</b>: butang <b>Cetak Laporan</b> akan buka dialog cetak pelayar. Anda boleh pilih “Simpan sebagai PDF” jika tersedia untuk laporan rasmi/lampsiran.</li>
+            <div class="body">
+              <h3 style="margin:0 0 8px; font-size:1rem; font-weight:950">Glosari ringkas</h3>
+              <ul style="margin:0; padding-left:18px">
+                <li><b>Pendapatan</b>: Duit masuk (yuran, jualan, sumbangan).</li>
+                <li><b>Perbelanjaan</b>: Duit keluar (jamuan, pengangkutan, utiliti).</li>
+                <li><b>Surplus</b>: Pendapatan > Perbelanjaan.</li>
+                <li><b>Defisit</b>: Perbelanjaan > Pendapatan.</li>
+                <li><b>Tunai/Bank</b>: Kaedah bayaran bagi transaksi.</li>
               </ul>
-              <div class="ruang"></div>
-              <p class="bantuan" style="margin:0;">
-                Contoh nama fail: <b>sandaran-kelab-YYYY-MM-DD.json</b>, <b>untung-rugi-2025.csv</b>, <b>perbandingan-multi-tahun.csv</b>.
+              <div class="sep"></div>
+              <p class="help" style="margin:0">
+                Sandaran JSON disyorkan secara berkala. Untuk laporan rasmi, gunakan “Cetak Laporan” dan pilih “Simpan sebagai PDF” jika tersedia.
               </p>
-            </div>
-          </div>
-
-          <div class="ruang"></div>
-
-          <div class="accordion">
-            <button class="acc-tajuk" type="button" aria-expanded="false" aria-controls="accLanjutan" id="btnAccLanjutan">
-              <span class="acc-kiri">
-                <span>Tetapan Lanjutan</span>
-                <div class="acc-sub">Perpuluhan, simbol RM, set semula data</div>
-              </span>
-              <svg class="acc-ikon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-            <div class="acc-kandungan" id="accLanjutan" data-buka="tidak">
-              <div class="grid" style="grid-template-columns: 1fr; gap: 10px;">
-                <label class="medan">
-                  <span>Simbol Mata Wang</span>
-                  <input class="input" id="tetSimbol" value="RM" />
-                </label>
-
-                <label class="medan">
-                  <span>Perpuluhan</span>
-                  <select class="input" id="tetPerpuluhan">
-                    <option value="2">2 tempat perpuluhan</option>
-                    <option value="0">0 tempat perpuluhan</option>
-                  </select>
-                </label>
-
-                <div class="bahaya-kotak">
-                  <b>Set Semula Semua Data</b><br />
-                  Ini akan memadam semua data dalam peranti ini. Anda perlu taip <b>RESET</b> untuk meneruskan.
-                  <div class="ruang"></div>
-                  <button class="butang butang-bahaya" id="btnSetSemula" type="button">Set Semula Semua Data</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="ruang"></div>
-
-          <div class="accordion">
-            <button class="acc-tajuk" type="button" aria-expanded="false" aria-controls="accBantuan" id="btnAccBantuan">
-              <span class="acc-kiri">
-                <span>Bantuan</span>
-                <div class="acc-sub">Cara guna, contoh, batasan single-entry, cetak & kongsi</div>
-              </span>
-              <svg class="acc-ikon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-            <div class="acc-kandungan" id="accBantuan" data-buka="tidak">
-              <div class="grid" style="gap: 10px;">
-                <div class="nota">
-                  <b>Cara mula cepat:</b> Cipta Tempoh → Import Akaun Contoh → Masukkan Transaksi → Lihat Laporan → Cetak/Sandarkan.
-                </div>
-
-                <div>
-                  <b>Single-entry (ringkas):</b>
-                  <ul style="margin: 8px 0 0; padding-left: 18px;">
-                    <li>Setiap transaksi dipadankan kepada satu <b>Akaun/Kategori</b> dan kaedah bayaran <b>Tunai/Bank</b>.</li>
-                    <li>Laporan “Penyata Kedudukan Kewangan” ialah anggaran ringkas dan mungkin tidak seimbang jika data tidak lengkap.</li>
-                  </ul>
-                </div>
-
-                <div>
-                  <b>Kongsi ringkasan WhatsApp:</b>
-                  <ul style="margin: 8px 0 0; padding-left: 18px;">
-                    <li>Tekan <b>Kongsi Ringkasan</b> untuk jana teks BM.</li>
-                    <li>Tekan <b>Salin Ringkasan</b> atau <b>Buka WhatsApp</b> untuk hantar.</li>
-                  </ul>
-                </div>
-
-                <div>
-                  <b>Cetak / Simpan PDF:</b>
-                  <ul style="margin: 8px 0 0; padding-left: 18px;">
-                    <li>Tekan <b>Cetak Laporan</b> di menu Laporan.</li>
-                    <li>Dalam dialog cetak, pilih “Simpan sebagai PDF” jika tersedia.</li>
-                  </ul>
-                </div>
-
-                <div>
-                  <b>Mod Latihan:</b> sesuai untuk latihan staf/pelajar/komuniti tanpa menjejaskan data sebenar.
-                </div>
-
-                <div>
-                  <b>Glosari mini:</b>
-                  <ul style="margin: 8px 0 0; padding-left: 18px;">
-                    <li><b>Pendapatan</b>: wang masuk (yuran, sumbangan, jualan).</li>
-                    <li><b>Perbelanjaan</b>: wang keluar (jamuan, alat tulis, sewa).</li>
-                    <li><b>Surplus</b>: pendapatan > perbelanjaan.</li>
-                    <li><b>Defisit</b>: perbelanjaan > pendapatan.</li>
-                    <li><b>Tempoh Laporan</b>: julat tarikh untuk laporan (contoh: 1/1/2025–31/12/2025).</li>
-                    <li><b>Tunai/Bank</b>: kaedah bayaran transaksi.</li>
-                  </ul>
-                </div>
-
-                <div class="baris">
-                  <button class="butang" id="btnDataContoh" type="button">Masukkan Data Contoh</button>
-                  <button class="butang" id="btnKosongkanDataContoh" type="button">Padam Data Contoh</button>
-                </div>
+              <div style="height:10px"></div>
+              <div class="row">
+                <button class="btn pri" id="btnWizard2" type="button">Mulakan Panduan Cepat</button>
+                <button class="btn" id="btnBackup2" type="button">Sandarkan Sekarang</button>
               </div>
             </div>
           </div>
 
         </div>
+      </section>
+    </main>
+
+    <div class="toastWrap" id="toastWrap" aria-live="polite" aria-atomic="true"></div>
+
+    <footer class="footer">
+      <span id="copyright">© 2026 Assis Kamu UMS. Hak cipta terpelihara.</span>
+    </footer>
+  </div>
+
+  <nav class="nav" aria-label="Navigasi utama">
+    <button id="navHome" class="active" type="button">Utama</button>
+    <button id="navTxn" type="button">Transaksi</button>
+    <button id="navReport" type="button">Laporan</button>
+    <button id="navSettings" type="button">Tetapan</button>
+  </nav>
+
+  <!-- Dialog: Transaksi -->
+  <dialog id="dlgTxn">
+    <div class="dlg-h">
+      <div>
+        <h3 id="dlgTxnTitle">Tambah Transaksi</h3>
+        <div class="small" id="dlgTxnSub">Isi maklumat transaksi. Medan wajib perlu diisi.</div>
       </div>
+      <button class="btn small" id="btnCloseTxn" type="button">Tutup</button>
+    </div>
+    <div class="dlg-b">
+      <div id="errTxn" class="err hidden"></div>
+      <div style="height:10px"></div>
+      <div class="row">
+        <label class="field"><span>Tarikh (wajib)</span><input id="tDate" type="date"></label>
+        <label class="field"><span>No. Resit/Rujukan</span><input id="tRef" type="text" placeholder="R001 / 12/2025"></label>
+      </div>
+      <div style="height:10px"></div>
+      <label class="field" style="width:100%"><span>Butiran (wajib)</span><input id="tDesc" type="text" placeholder="Yuran keahlian / Jamuan"></label>
+      <div style="height:10px"></div>
+      <div class="row">
+        <label class="field"><span>Amaun (RM) (wajib)</span><input id="tAmt" inputmode="decimal" type="text" placeholder="50.00"></label>
+        <label class="field"><span>Akaun/Kategori (wajib)</span><select id="tAcct"></select></label>
+        <label class="field"><span>Kaedah Bayaran (wajib)</span><select id="tPay"><option>Tunai</option><option>Bank</option></select></label>
+      </div>
+      <div style="height:10px"></div>
+      <label class="field" style="width:100%"><span>Tempoh Laporan (automatik)</span><input id="tPeriodLabel" type="text" disabled></label>
+    </div>
+    <div class="dlg-f">
+      <button class="btn" id="btnDelTxn" type="button">Padam</button>
+      <button class="btn pri" id="btnSaveTxn" type="button">Simpan</button>
+    </div>
+  </dialog>
 
-      <div class="kad">
-        <div class="tajuk-kad">
-          <h2>Mod Lanjutan</h2>
-          <span class="lencana" id="lencanaLanjutan">Tersembunyi dalam Mod Ringkas</span>
-        </div>
-        <div class="isi-kad" id="panelLanjutan">
-          <div class="nota">
-            <b>Nota:</b> Dalam Mod Ringkas, kebanyakan pengguna hanya perlukan Transaksi dan Laporan.
-            Di sini anda boleh urus <b>Profil Kelab</b>, <b>Tempoh Laporan</b>, dan <b>Carta Akaun</b>.
-          </div>
-
-          <div class="ruang"></div>
-
-          <div class="accordion">
-            <button class="acc-tajuk" type="button" aria-expanded="false" aria-controls="accProfilKelab" id="btnAccProfilKelab">
-              <span class="acc-kiri">
-                <span>Profil Kelab</span>
-                <div class="acc-sub">Nama kelab, no pendaftaran, disediakan oleh</div>
-              </span>
-              <svg class="acc-ikon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-            <div class="acc-kandungan" id="accProfilKelab" data-buka="tidak">
-              <div class="grid" style="grid-template-columns: 1fr; gap: 10px;">
-                <label class="medan">
-                  <span>Nama Kelab</span>
-                  <input class="input" id="profilNamaKelab" placeholder="Contoh: Kelab Kebajikan..." />
-                </label>
-                <label class="medan">
-                  <span>No. Pendaftaran (opsyenal)</span>
-                  <input class="input" id="profilNoDaftar" placeholder="Contoh: UMS/KELAB/123" />
-                </label>
-                <div class="baris">
-                  <label class="medan" style="flex:1 1 220px;">
-                    <span>Disediakan oleh (Nama)</span>
-                    <input class="input" id="profilDisediaNama" placeholder="Contoh: Ali bin Abu" />
-                  </label>
-                  <label class="medan" style="flex:1 1 220px;">
-                    <span>Jawatan</span>
-                    <input class="input" id="profilDisediaJawatan" placeholder="Contoh: Bendahari" />
-                  </label>
-                </div>
-                <div class="baris">
-                  <button class="butang butang-utama" id="btnSimpanProfil" type="button">Simpan Profil</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="ruang"></div>
-
-          <div class="accordion">
-            <button class="acc-tajuk" type="button" aria-expanded="false" aria-controls="accTempoh" id="btnAccTempoh">
-              <span class="acc-kiri">
-                <span>Tempoh Laporan</span>
-                <div class="acc-sub">Tambah/ubah/padam tempoh + baki awal Tunai/Bank</div>
-              </span>
-              <svg class="acc-ikon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-            <div class="acc-kandungan" id="accTempoh" data-buka="tidak">
-              <div class="grid" style="gap: 10px;">
-                <div class="baris">
-                  <label class="medan" style="flex:1 1 160px; max-width: 240px;">
-                    <span>Label Tempoh</span>
-                    <input class="input" id="tempohLabel" placeholder="Contoh: 2025" />
-                  </label>
-                  <label class="medan" style="flex:1 1 160px; max-width: 240px;">
-                    <span>Tarikh Mula</span>
-                    <input class="input" id="tempohMula" type="date" />
-                  </label>
-                  <label class="medan" style="flex:1 1 160px; max-width: 240px;">
-                    <span>Tarikh Tamat</span>
-                    <input class="input" id="tempohTamat" type="date" />
-                  </label>
-                </div>
-
-                <div class="baris">
-                  <label class="medan" style="flex:1 1 200px; max-width: 260px;">
-                    <span>Baki Awal Tunai (RM)</span>
-                    <input class="input" id="bakiAwalTunai" inputmode="decimal" placeholder="0" />
-                  </label>
-                  <label class="medan" style="flex:1 1 200px; max-width: 260px;">
-                    <span>Baki Awal Bank (RM)</span>
-                    <input class="input" id="bakiAwalBank" inputmode="decimal" placeholder="0" />
-                  </label>
-                  <button class="butang butang-utama" id="btnTambahTempoh" type="button">Tambah Tempoh</button>
-                </div>
-
-                <div class="pembahagi"></div>
-
-                <div class="baris" style="justify-content:space-between;">
-                  <b>Senarai Tempoh</b>
-                  <span class="bantuan">Klik “Tetapkan” untuk jadikan tempoh semasa.</span>
-                </div>
-
-                <div class="sembunyi-besar">
-                  <table class="jadual" aria-label="Senarai tempoh laporan">
-                    <thead>
-                      <tr>
-                        <th>Label</th>
-                        <th>Tarikh</th>
-                        <th class="kanan">Baki Awal Tunai</th>
-                        <th class="kanan">Baki Awal Bank</th>
-                        <th class="pusat">Tindakan</th>
-                      </tr>
-                    </thead>
-                    <tbody id="tbodyTempoh"></tbody>
-                  </table>
-                </div>
-                <div class="sembunyi-kecil" id="kadTempoh"></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="ruang"></div>
-
-          <div class="accordion">
-            <button class="acc-tajuk" type="button" aria-expanded="false" aria-controls="accAkaun" id="btnAccAkaun">
-              <span class="acc-kiri">
-                <span>Carta Akaun</span>
-                <div class="acc-sub">Tambah/ubah/padam akaun + import akaun contoh</div>
-              </span>
-              <svg class="acc-ikon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-            <div class="acc-kandungan" id="accAkaun" data-buka="tidak">
-              <div class="grid" style="gap: 10px;">
-                <div class="baris" style="align-items:flex-end;">
-                  <label class="medan" style="flex: 1 1 220px; min-width: 220px;">
-                    <span>Nama Akaun</span>
-                    <input class="input" id="akaunNama" placeholder="Contoh: Yuran Keahlian" />
-                  </label>
-                  <label class="medan" style="flex: 1 1 200px; max-width: 260px;">
-                    <span>Jenis Akaun</span>
-                    <select class="input" id="akaunJenis">
-                      <option value="Pendapatan">Pendapatan</option>
-                      <option value="Perbelanjaan">Perbelanjaan</option>
-                      <option value="Aset">Aset</option>
-                      <option value="Liabiliti">Liabiliti</option>
-                      <option value="Ekuiti">Ekuiti</option>
-                    </select>
-                  </label>
-                  <button class="butang butang-utama" id="btnTambahAkaun" type="button">Tambah Akaun</button>
-                </div>
-
-                <div class="baris">
-                  <button class="butang" id="btnImportAkaunContoh" type="button">Import Akaun Contoh (BM)</button>
-                  <label class="medan" style="max-width: 260px;">
-                    <span>Penapis Jenis</span>
-                    <select class="input" id="penapisJenisAkaun">
-                      <option value="">Semua</option>
-                      <option value="Pendapatan">Pendapatan</option>
-                      <option value="Perbelanjaan">Perbelanjaan</option>
-                      <option value="Aset">Aset</option>
-                      <option value="Liabiliti">Liabiliti</option>
-                      <option value="Ekuiti">Ekuiti</option>
-                    </select>
-                  </label>
-                  <label class="medan" style="flex: 1 1 240px;">
-                    <span>Carian Akaun</span>
-                    <input class="input" id="carianAkaun" placeholder="Cari nama akaun..." />
-                  </label>
-                </div>
-
-                <div class="sembunyi-besar">
-                  <table class="jadual" aria-label="Senarai carta akaun">
-                    <thead>
-                      <tr>
-                        <th>Nama Akaun</th>
-                        <th>Jenis</th>
-                        <th class="pusat">Digunakan</th>
-                        <th class="pusat">Tindakan</th>
-                      </tr>
-                    </thead>
-                    <tbody id="tbodyAkaun"></tbody>
-                  </table>
-                </div>
-                <div class="sembunyi-kecil" id="kadAkaun"></div>
-
-                <p class="bantuan" style="margin:0;">
-                  Nota: Akaun tidak boleh dipadam jika sudah digunakan oleh transaksi.
-                </p>
-              </div>
-            </div>
-          </div>
-
-        </div>
+  <!-- Dialog: Tempoh -->
+  <dialog id="dlgPeriod">
+    <div class="dlg-h">
+      <div>
+        <h3 id="dlgPeriodTitle">Tambah Tempoh Laporan</h3>
+        <div class="small">Contoh label: 2025. Pilih tarikh mula dan tamat.</div>
+      </div>
+      <button class="btn small" id="btnClosePeriod" type="button">Tutup</button>
+    </div>
+    <div class="dlg-b">
+      <div id="errPeriod" class="err hidden"></div>
+      <div style="height:10px"></div>
+      <div class="row">
+        <label class="field"><span>Label (wajib)</span><input id="pLabel" type="text" placeholder="2025"></label>
+        <label class="field"><span>Tarikh mula (wajib)</span><input id="pStart" type="date"></label>
+        <label class="field"><span>Tarikh tamat (wajib)</span><input id="pEnd" type="date"></label>
+      </div>
+      <div style="height:10px"></div>
+      <div class="row">
+        <label class="field"><span>Baki awal Tunai (RM)</span><input id="pOpenCash" inputmode="decimal" type="text" placeholder="0"></label>
+        <label class="field"><span>Baki awal Bank (RM)</span><input id="pOpenBank" inputmode="decimal" type="text" placeholder="0"></label>
+        <label class="field" style="min-width:220px"><span>Jadikan tempoh semasa</span><select id="pMakeCurrent"><option value="yes">Ya</option><option value="no">Tidak</option></select></label>
       </div>
     </div>
-  </section>
-</main>
+    <div class="dlg-f">
+      <button class="btn" id="btnDelPeriod" type="button">Padam</button>
+      <button class="btn pri" id="btnSavePeriod" type="button">Simpan</button>
+    </div>
+  </dialog>
 
-<div class="cetak-kaki" id="cetakKaki"></div>
+  <!-- Dialog: Akaun -->
+  <dialog id="dlgAcct">
+    <div class="dlg-h">
+      <div>
+        <h3 id="dlgAcctTitle">Tambah Akaun/Kategori</h3>
+        <div class="small">Pilih jenis akaun. Pastikan nama mudah difahami.</div>
+      </div>
+      <button class="btn small" id="btnCloseAcct" type="button">Tutup</button>
+    </div>
+    <div class="dlg-b">
+      <div id="errAcct" class="err hidden"></div>
+      <div style="height:10px"></div>
+      <div class="row">
+        <label class="field" style="flex:1 1 240px; min-width:240px"><span>Nama (wajib)</span><input id="aName" type="text" placeholder="Yuran Keahlian"></label>
+        <label class="field"><span>Jenis (wajib)</span>
+          <select id="aType"><option>Pendapatan</option><option>Perbelanjaan</option><option>Aset</option><option>Liabiliti</option><option>Ekuiti</option></select>
+        </label>
+      </div>
+      <div style="height:10px"></div>
+      <label class="field" style="width:100%"><span>Nota (opsyenal)</span><input id="aNote" type="text" placeholder="Untuk yuran bulanan ahli"></label>
+    </div>
+    <div class="dlg-f">
+      <button class="btn" id="btnDelAcct" type="button">Padam</button>
+      <button class="btn pri" id="btnSaveAcct" type="button">Simpan</button>
+    </div>
+  </dialog>
+
+  <!-- Dialog: Set Semula -->
+  <dialog id="dlgReset">
+    <div class="dlg-h">
+      <div>
+        <h3>Set Semula Semua Data</h3>
+        <div class="small">Tindakan ini akan memadam data dalam peranti. Sila sandarkan dahulu.</div>
+      </div>
+      <button class="btn small" id="btnCloseReset" type="button">Tutup</button>
+    </div>
+    <div class="dlg-b">
+      <p class="help" style="margin-top:0">Untuk mengesahkan, taip <b>RESET</b> di bawah.</p>
+      <label class="field"><span>Taip RESET</span><input id="resetText" type="text" placeholder="RESET"></label>
+      <div style="height:10px"></div>
+      <div id="errReset" class="err hidden"></div>
+    </div>
+    <div class="dlg-f">
+      <button class="btn" id="btnConfirmReset" type="button" style="border-color: color-mix(in srgb, var(--danger) 45%, var(--line)); color: color-mix(in srgb, var(--danger) 88%, var(--text));">Set Semula</button>
+    </div>
+  </dialog>
+
+  <script>
+  ;(() => {
+    "use strict";
+
+    /* ===== util ringkas ===== */
+    const $ = (s, r=document) => r.querySelector(s);
+    const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+    const uid = () => (Date.now().toString(16) + "-" + Math.random().toString(16).slice(2));
+    const isoToday = () => new Date().toISOString().slice(0,10);
+    const safe = (s) => (s ?? "").toString().replace(/[<>]/g,"");
+    const toNum = (v) => {
+      const raw = String(v ?? "").trim().replace(/RM/gi,"").replace(/\s+/g,"").replace(/,/g,"");
+      const n = Number(raw);
+      return Number.isFinite(n) ? n : NaN;
+    };
+    const fmtDateMY = (iso) => {
+      if(!iso) return "";
+      const [y,m,d] = iso.split("-").map(Number);
+      const dt = new Date(Date.UTC(y,(m||1)-1,(d||1)));
+      try { return new Intl.DateTimeFormat("ms-MY",{day:"2-digit",month:"2-digit",year:"numeric"}).format(dt); }
+      catch { return iso; }
+    };
+
+    function csvEsc(v){
+      const s = String(v ?? "");
+      return /[",\n]/.test(s) ? `"${s.replace(/"/g,'""')}"` : s;
+    }
+    function download(name, content, type="application/octet-stream"){
+      const blob = new Blob([content], {type});
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = name;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 0);
+    }
+    async function copyText(t){
+      if(navigator.clipboard?.writeText) return navigator.clipboard.writeText(t);
+      const ta = document.createElement("textarea");
+      ta.value = t; ta.style.position="fixed"; ta.style.left="-9999px";
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand("copy"); } catch {}
+      ta.remove();
+    }
+
+    /* ===== Toast + Undo ===== */
+    const toastWrap = $("#toastWrap");
+    let undo = []; // {id, restore, expires}
+    function toast(title, text="", actionText=null, actionFn=null, ms=5000){
+      const el = document.createElement("div");
+      el.className = "toast";
+      const left = document.createElement("div");
+      left.style.minWidth="0";
+      left.innerHTML = `<b>${safe(title)}</b>${text ? `<div class="small">${safe(text)}</div>` : ""}`;
+      const right = document.createElement("div");
+      right.className = "row";
+      right.style.flexWrap="nowrap";
+      right.style.gap="8px";
+      right.style.pointerEvents="auto";
+      if(actionText && actionFn){
+        const b = document.createElement("button");
+        b.className = "btn small";
+        b.type="button";
+        b.textContent = actionText;
+        b.addEventListener("click", () => actionFn());
+        right.appendChild(b);
+      }
+      const close = document.createElement("button");
+      close.className = "btn small";
+      close.type="button";
+      close.textContent = "Tutup";
+      close.addEventListener("click", () => el.remove());
+      right.appendChild(close);
+
+      el.appendChild(left);
+      el.appendChild(right);
+      toastWrap.appendChild(el);
+
+      if(ms>0) setTimeout(() => { if(el.isConnected) el.remove(); }, ms);
+    }
+    function pushUndo(label, restore, ms=10000){
+      const id = uid();
+      undo.push({id, restore, expires: Date.now()+ms});
+      toast("Tindakan dipadam", label, "Buat Asal", () => {
+        const i = undo.findIndex(x => x.id === id);
+        if(i>=0){
+          const u = undo[i]; undo.splice(i,1);
+          try { u.restore(); } catch {}
+          toast("Berjaya buat asal", label, null, null, 3500);
+        }
+      }, ms);
+      setTimeout(() => { undo = undo.filter(x => x.id !== id); }, ms+200);
+    }
+
+    /* ===== Storage ===== */
+    const KEY = "kewangan_kelab_data_v1";
+    const SCHEMA = 1;
+
+    function defaults(){
+      const y = new Date().getFullYear();
+      return {
+        schemaVersion: SCHEMA,
+        profile: { clubName:"Pencipta Penyata Kewangan Kelab", regNo:"", preparedBy:"", preparedRole:"" },
+        settings: {
+          simbol:"RM", perpuluhan:2,
+          theme:"light", hiContrast:false, reduceMotion:false, fontSize:"normal", tapSize:"normal",
+          role:"Bendahari", advanced:false
+        },
+        currentPeriodId:"",
+        periods: [{ id:uid(), label:String(y), start:`${y}-01-01`, end:`${y}-12-31`, openingCash:0, openingBank:0, createdAt:Date.now() }],
+        accounts: [],
+        txns: [],
+        meta: { demoMode:false, lastSavedAt:0 }
+      };
+    }
+    function load(){
+      const raw = localStorage.getItem(KEY);
+      if(!raw) return defaults();
+      try{
+        const d = JSON.parse(raw);
+        return migrate(d);
+      }catch{ return defaults(); }
+    }
+    function migrate(d){
+      d = (d && typeof d==="object") ? d : defaults();
+      d.schemaVersion = d.schemaVersion || SCHEMA;
+      d.profile = d.profile || {};
+      d.settings = d.settings || {};
+      d.periods = Array.isArray(d.periods) ? d.periods : [];
+      d.accounts = Array.isArray(d.accounts) ? d.accounts : [];
+      d.txns = Array.isArray(d.txns) ? d.txns : [];
+      d.meta = d.meta || {};
+      if(typeof d.meta.demoMode !== "boolean") d.meta.demoMode = false;
+      if(!Number.isFinite(d.meta.lastSavedAt)) d.meta.lastSavedAt = 0;
+
+      const s = d.settings;
+      if(!s.simbol) s.simbol="RM";
+      if(!Number.isFinite(s.perpuluhan)) s.perpuluhan=2;
+      if(!s.theme) s.theme="light";
+      if(typeof s.hiContrast !== "boolean") s.hiContrast=false;
+      if(typeof s.reduceMotion !== "boolean") s.reduceMotion=false;
+      if(!s.fontSize) s.fontSize="normal";
+      if(!s.tapSize) s.tapSize="normal";
+      if(!s.role) s.role="Bendahari";
+      if(typeof s.advanced !== "boolean") s.advanced=false;
+
+      if(d.periods.length===0) d.periods = defaults().periods;
+      if(!d.currentPeriodId || !d.periods.some(p => p.id === d.currentPeriodId)){
+        d.currentPeriodId = d.periods[0].id;
+      }
+      return d;
+    }
+
+    let DATA = load();
+    let DIRTY = false;
+    let saveTimer = null;
+
+    function setSaveStatus(kind, text){
+      const dot = $("#saveDot");
+      dot.classList.remove("ok","warn","bad");
+      if(kind) dot.classList.add(kind);
+      $("#saveText").textContent = text;
+    }
+    function markDirty(){
+      DIRTY = true;
+      setSaveStatus("warn", "Perubahan belum disimpan");
+      if(saveTimer) clearTimeout(saveTimer);
+      saveTimer = setTimeout(save, 600);
+    }
+    function save(){
+      try{
+        DATA.meta.lastSavedAt = Date.now();
+        localStorage.setItem(KEY, JSON.stringify(DATA));
+        DIRTY = false;
+        setSaveStatus("ok", "Disimpan");
+      }catch{
+        setSaveStatus("bad","Gagal simpan");
+        toast("Gagal simpan", "Ruang simpanan mungkin penuh. Sila sandarkan JSON.", null, null, 6500);
+      }
+    }
+
+    /* ===== Format RM ===== */
+    function fmtRM(n){
+      const s = DATA.settings.simbol || "RM";
+      const dp = Number(DATA.settings.perpuluhan) === 0 ? 0 : 2;
+      const v = Number.isFinite(n) ? n : 0;
+      try{
+        const nf = new Intl.NumberFormat("ms-MY",{minimumFractionDigits:dp, maximumFractionDigits:dp});
+        return `${s} ${nf.format(v)}`;
+      }catch{
+        return `${s} ${v.toFixed(dp)}`;
+      }
+    }
+
+    /* ===== Theme/A11y apply ===== */
+    function applyUX(){
+      document.documentElement.dataset.theme = DATA.settings.theme === "dark" ? "dark" : "light";
+      document.documentElement.dataset.contrast = DATA.settings.hiContrast ? "high" : "normal";
+      document.documentElement.dataset.motion = DATA.settings.reduceMotion ? "reduced" : "normal";
+      const font = DATA.settings.fontSize === "xbig" ? 19 : (DATA.settings.fontSize === "big" ? 17 : 16);
+      document.documentElement.style.setProperty("--font", font + "px");
+      const tap = DATA.settings.tapSize === "big" ? 54 : 44;
+      document.documentElement.style.setProperty("--tap", tap + "px");
+
+      $("#hdrMode").textContent = DATA.settings.advanced ? "Mod Lanjutan" : "Mod Ringkas";
+      $("#hdrRole").textContent = `Paparan: ${DATA.settings.role || "Bendahari"}`;
+      $("#hdrClub").textContent = DATA.profile.clubName || "Pencipta Penyata Kewangan Kelab";
+    }
+
+    /* ===== Period helpers ===== */
+    const getPeriod = (id) => DATA.periods.find(p => p.id === id) || null;
+    const curPeriod = () => getPeriod(DATA.currentPeriodId) || DATA.periods[0] || null;
+
+    function txnsInPeriod(periodId){
+      const p = getPeriod(periodId);
+      if(!p) return [];
+      return DATA.txns.filter(t => t.date >= p.start && t.date <= p.end);
+    }
+    const getAcct = (id) => DATA.accounts.find(a => a.id === id) || null;
+
+    function sumIncomeExpense(txns){
+      let inc=0, exp=0;
+      for(const t of txns){
+        const a = getAcct(t.accountId);
+        if(a?.type === "Pendapatan") inc += t.amount;
+        else if(a?.type === "Perbelanjaan") exp += t.amount;
+      }
+      return {inc, exp, net: inc-exp};
+    }
+
+    function cashBankBalances(txns, periodId){
+      const p = getPeriod(periodId);
+      const openCash = p ? (Number(p.openingCash)||0) : 0;
+      const openBank = p ? (Number(p.openingBank)||0) : 0;
+
+      let dCash=0, dBank=0;
+
+      for(const t of txns){
+        const a = getAcct(t.accountId);
+        const type = a?.type || "";
+        const isCash = t.pay === "Tunai";
+
+        // ringkas: pend/liab/ekuiti -> +, belanja/aset -> -
+        const sign = (type==="Pendapatan"||type==="Liabiliti"||type==="Ekuiti") ? +1 :
+                     (type==="Perbelanjaan"||type==="Aset") ? -1 : 0;
+        const delta = sign * t.amount;
+
+        if(isCash) dCash += delta; else dBank += delta;
+      }
+
+      return {
+        openCash, openBank, dCash, dBank,
+        endCash: openCash + dCash,
+        endBank: openBank + dBank
+      };
+    }
+
+    /* ===== Render selects ===== */
+    function fillPeriodSelect(sel){
+      sel.innerHTML = "";
+      for(const p of DATA.periods){
+        const o = document.createElement("option");
+        o.value = p.id;
+        o.textContent = `${p.label} (${fmtDateMY(p.start)}–${fmtDateMY(p.end)})`;
+        sel.appendChild(o);
+      }
+      sel.value = DATA.currentPeriodId || (DATA.periods[0]?.id || "");
+    }
+    function fillAccountSelect(sel, includeAll=false){
+      sel.innerHTML = "";
+      if(includeAll){
+        const o = document.createElement("option");
+        o.value = "";
+        o.textContent = "Semua";
+        sel.appendChild(o);
+      }
+      for(const a of DATA.accounts){
+        const o = document.createElement("option");
+        o.value = a.id;
+        o.textContent = `${a.name} (${a.type})`;
+        sel.appendChild(o);
+      }
+    }
+
+    function updateHdrPeriod(){
+      const p = curPeriod();
+      const label = p ? `${p.label} (${fmtDateMY(p.start)}–${fmtDateMY(p.end)})` : "Tiada";
+      $("#hdrPeriod").textContent = `Tempoh: ${label}`;
+    }
+
+    /* ===== Navigation ===== */
+    const pages = { home: $("#pgHome"), txn: $("#pgTxn"), rpt: $("#pgReport"), set: $("#pgSettings") };
+    function go(where){
+      Object.values(pages).forEach(p => p.classList.add("hidden"));
+      pages[where].classList.remove("hidden");
+
+      $("#navHome").classList.toggle("active", where==="home");
+      $("#navTxn").classList.toggle("active", where==="txn");
+      $("#navReport").classList.toggle("active", where==="rpt");
+      $("#navSettings").classList.toggle("active", where==="set");
+
+      if(where==="home") renderHome();
+      if(where==="txn") renderTxn();
+      if(where==="rpt") renderReport();
+      if(where==="set") renderSettings();
+    }
+
+    /* ===== Accordion helper ===== */
+    function toggleAcc(acc, btn){
+      const open = acc.dataset.open === "yes";
+      acc.dataset.open = open ? "no" : "yes";
+      if(btn) btn.setAttribute("aria-expanded", open ? "false" : "true");
+    }
+
+    /* ===== Permissions by role ===== */
+    const canEdit = () => (DATA.settings.role === "Bendahari" || DATA.settings.role === "AJK");
+    const canDelete = () => (DATA.settings.role === "Bendahari");
+
+    /* ===== Render Home ===== */
+    function renderHome(){
+      fillPeriodSelect($("#selPeriodHome"));
+      updateHdrPeriod();
+
+      const p = curPeriod();
+      if(!p){
+        $("#kpiIn").textContent = fmtRM(0);
+        $("#kpiOut").textContent = fmtRM(0);
+        $("#kpiNet").textContent = fmtRM(0);
+        $("#kpiCash").textContent = fmtRM(0);
+        $("#kpiBank").textContent = fmtRM(0);
+        $("#recentList").innerHTML="";
+        $("#recentEmpty").classList.remove("hidden");
+        return;
+      }
+
+      const txns = txnsInPeriod(p.id);
+      const s = sumIncomeExpense(txns);
+      const cb = cashBankBalances(txns, p.id);
+      $("#kpiIn").textContent = fmtRM(s.inc);
+      $("#kpiOut").textContent = fmtRM(s.exp);
+      $("#kpiNet").textContent = fmtRM(s.net);
+      $("#kpiCash").textContent = fmtRM(cb.endCash);
+      $("#kpiBank").textContent = fmtRM(cb.endBank);
+
+      const recent = [...txns].sort((a,b) => (b.date.localeCompare(a.date) || (b.createdAt||0)-(a.createdAt||0))).slice(0,10);
+      const list = $("#recentList");
+      list.innerHTML = "";
+      $("#recentEmpty").classList.toggle("hidden", recent.length>0);
+      for(const t of recent){
+        const a = getAcct(t.accountId);
+        const el = document.createElement("div");
+        el.className = "item";
+        el.innerHTML = `
+          <div class="top">
+            <div style="min-width:0">
+              <h3>${safe(t.desc || "(Tiada butiran)")}</h3>
+              <div class="meta">
+                <span class="pill pri">${safe(a?.name || "Akaun tidak ditemui")}</span>
+                <span class="pill">${safe(a?.type || "")}</span>
+                <span class="pill">${safe(t.pay || "")}</span>
+                <span>Tarikh: ${fmtDateMY(t.date)}</span>
+                ${t.ref ? `<span>No.: ${safe(t.ref)}</span>` : ""}
+              </div>
+            </div>
+            <div style="text-align:right; min-width:120px; font-weight:950">${fmtRM(t.amount)}</div>
+          </div>
+          <div style="height:8px"></div>
+          <div class="row">
+            <button class="btn small" type="button" data-edit-txn="${t.id}" ${canEdit() ? "" : "disabled"}>Ubah</button>
+          </div>
+        `;
+        list.appendChild(el);
+      }
+      $$("[data-edit-txn]").forEach(b => b.addEventListener("click", () => openTxnDlg(b.dataset.editTxn)));
+    }
+
+    /* ===== Render Txn ===== */
+    function renderTxn(){
+      fillPeriodSelect($("#selPeriodTxn"));
+      fillAccountSelect($("#fAccount"), true);
+      updateHdrPeriod();
+
+      const periodId = $("#selPeriodTxn").value || DATA.currentPeriodId;
+      const p = getPeriod(periodId) || curPeriod();
+      let txns = p ? txnsInPeriod(p.id) : [];
+
+      const q = ($("#qTxn").value || "").trim().toLowerCase();
+      const d1 = $("#fStart").value;
+      const d2 = $("#fEnd").value;
+      const type = $("#fType").value;
+      const acct = $("#fAccount").value;
+      const pay = $("#fPay").value;
+      const sort = $("#fSort").value || "desc";
+
+      if(q){
+        txns = txns.filter(t => (t.ref||"").toLowerCase().includes(q) || (t.desc||"").toLowerCase().includes(q));
+      }
+      if(d1) txns = txns.filter(t => t.date >= d1);
+      if(d2) txns = txns.filter(t => t.date <= d2);
+      if(type){
+        txns = txns.filter(t => (getAcct(t.accountId)?.type || "") === type);
+      }
+      if(acct) txns = txns.filter(t => t.accountId === acct);
+      if(pay) txns = txns.filter(t => (t.pay||"") === pay);
+
+      txns.sort((a,b) => sort === "asc"
+        ? (a.date.localeCompare(b.date) || (a.createdAt||0)-(b.createdAt||0))
+        : (b.date.localeCompare(a.date) || (b.createdAt||0)-(a.createdAt||0))
+      );
+
+      const sum = sumIncomeExpense(txns);
+      $("#sumCount").textContent = `${txns.length} transaksi`;
+      $("#sumIn").textContent = `Pendapatan: ${fmtRM(sum.inc)}`;
+      $("#sumOut").textContent = `Perbelanjaan: ${fmtRM(sum.exp)}`;
+      $("#sumNet").textContent = `Surplus/Defisit: ${fmtRM(sum.net)}`;
+
+      const list = $("#txnList");
+      list.innerHTML = "";
+      $("#txnEmpty").classList.toggle("hidden", txns.length>0);
+
+      for(const t of txns){
+        const a = getAcct(t.accountId);
+        const el = document.createElement("div");
+        el.className = "item";
+        el.innerHTML = `
+          <div class="top">
+            <div style="min-width:0">
+              <h3>${safe(t.desc || "(Tiada butiran)")}</h3>
+              <div class="meta">
+                <span class="pill pri">${safe(a?.name || "Akaun tidak ditemui")}</span>
+                <span class="pill">${safe(a?.type || "")}</span>
+                <span class="pill">${safe(t.pay || "")}</span>
+                <span>Tarikh: ${fmtDateMY(t.date)}</span>
+                ${t.ref ? `<span>No.: ${safe(t.ref)}</span>` : ""}
+              </div>
+            </div>
+            <div style="text-align:right; min-width:120px; font-weight:950">${fmtRM(t.amount)}</div>
+          </div>
+          <div style="height:8px"></div>
+          <div class="row">
+            <button class="btn small" type="button" data-edit-txn="${t.id}" ${canEdit() ? "" : "disabled"}>Ubah</button>
+          </div>
+        `;
+        list.appendChild(el);
+      }
+      $$("[data-edit-txn]").forEach(b => b.addEventListener("click", () => openTxnDlg(b.dataset.editTxn)));
+    }
+
+    /* ===== Report render helpers ===== */
+    function tableCard(title, rows){ // rows: [{label,value}]
+      const el = document.createElement("div");
+      el.className = "item";
+      el.innerHTML = `<b>${safe(title)}</b>`;
+      const t = document.createElement("table");
+      t.style.marginTop="10px";
+      t.innerHTML = `<thead><tr><th>Perkara</th><th class="right-align">Amaun</th></tr></thead><tbody></tbody>`;
+      const tb = t.querySelector("tbody");
+      for(const r of rows){
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${safe(r.label)}</td><td class="right-align">${safe(r.value)}</td>`;
+        tb.appendChild(tr);
+      }
+      el.appendChild(t);
+      return el;
+    }
+
+    function reportData(periodId){
+      const p = getPeriod(periodId);
+      const txns = p ? txnsInPeriod(p.id) : [];
+      const sum = sumIncomeExpense(txns);
+      const cb = cashBankBalances(txns, periodId);
+      return {p, txns, sum, cb};
+    }
+
+    function renderPL(periodId){
+      const {p, txns} = reportData(periodId);
+      const out = $("#rptPL");
+      out.innerHTML = "";
+      if(!p){ out.innerHTML = `<div class="help">Tiada tempoh laporan.</div>`; return; }
+
+      const inc = new Map(); const exp = new Map();
+      for(const t of txns){
+        const a = getAcct(t.accountId);
+        if(a?.type === "Pendapatan") inc.set(a.id, (inc.get(a.id)||0) + t.amount);
+        if(a?.type === "Perbelanjaan") exp.set(a.id, (exp.get(a.id)||0) + t.amount);
+      }
+      const incRows = Array.from(inc.entries()).map(([id,val]) => ({label: getAcct(id)?.name || "Akaun tidak ditemui", value: fmtRM(val)}))
+        .sort((a,b) => (toNum(b.value.replace(/[^\d.-]/g,'')) - toNum(a.value.replace(/[^\d.-]/g,''))) || 0);
+      const expRows = Array.from(exp.entries()).map(([id,val]) => ({label: getAcct(id)?.name || "Akaun tidak ditemui", value: fmtRM(val)}))
+        .sort((a,b) => (toNum(b.value.replace(/[^\d.-]/g,'')) - toNum(a.value.replace(/[^\d.-]/g,''))) || 0);
+
+      const totalInc = Array.from(inc.values()).reduce((s,x)=>s+x,0);
+      const totalExp = Array.from(exp.values()).reduce((s,x)=>s+x,0);
+      const net = totalInc - totalExp;
+
+      out.appendChild(tableCard("Ringkasan", [
+        {label:"Jumlah Pendapatan", value: fmtRM(totalInc)},
+        {label:"Jumlah Perbelanjaan", value: fmtRM(totalExp)},
+        {label:"Surplus/Defisit Bersih", value: fmtRM(net)},
+      ]));
+
+      out.appendChild(tableCard("Pendapatan mengikut akaun", [
+        ...(incRows.length ? incRows : [{label:"Tiada", value: fmtRM(0)}]),
+        {label:"Jumlah Pendapatan", value: fmtRM(totalInc)}
+      ]));
+      out.appendChild(tableCard("Perbelanjaan mengikut akaun", [
+        ...(expRows.length ? expRows : [{label:"Tiada", value: fmtRM(0)}]),
+        {label:"Jumlah Perbelanjaan", value: fmtRM(totalExp)}
+      ]));
+    }
+
+    function renderBS(periodId){
+      const {p, txns, sum, cb} = reportData(periodId);
+      const out = $("#rptBS");
+      out.innerHTML = "";
+      if(!p){ out.innerHTML = `<div class="help">Tiada tempoh laporan.</div>`; return; }
+
+      const assets = cb.endCash + cb.endBank;
+
+      let liab=0, eq=0;
+      for(const t of txns){
+        const type = getAcct(t.accountId)?.type || "";
+        if(type==="Liabiliti") liab += t.amount;
+        if(type==="Ekuiti") eq += t.amount;
+      }
+      const eq2 = eq + sum.net;
+      const le = liab + eq2;
+      const diff = assets - le;
+      const ok = Math.abs(diff) < 0.005;
+
+      out.appendChild(tableCard("Aset (ringkas)", [
+        {label:"Tunai (Baki Awal + Perubahan)", value: fmtRM(cb.endCash)},
+        {label:"Bank (Baki Awal + Perubahan)", value: fmtRM(cb.endBank)},
+        {label:"Jumlah Aset", value: fmtRM(assets)}
+      ]));
+      out.appendChild(tableCard("Liabiliti dan Ekuiti (anggaran single-entry)", [
+        {label:"Jumlah Liabiliti (transaksi Liabiliti)", value: fmtRM(liab)},
+        {label:"Ekuiti (transaksi Ekuiti)", value: fmtRM(eq)},
+        {label:"Tambah Surplus/Defisit Bersih", value: fmtRM(sum.net)},
+        {label:"Jumlah Ekuiti", value: fmtRM(eq2)},
+        {label:"Jumlah Liabiliti + Ekuiti", value: fmtRM(le)}
+      ]));
+
+      const msg = document.createElement("div");
+      msg.className = "item";
+      msg.innerHTML = `<b>Semakan rekonsiliasi</b><div class="help" style="margin-top:8px">${
+        ok ? `Aset <b>seimbang</b> dengan Liabiliti + Ekuiti (perbezaan kecil: ${fmtRM(diff)}).`
+           : `Amaran: Aset <b>tidak seimbang</b> dengan Liabiliti + Ekuiti. Perbezaan: <b>${fmtRM(diff)}</b>.<br><br>Ini biasanya berlaku apabila transaksi Aset/Liabiliti/Ekuiti tidak dimasukkan dengan lengkap dalam sistem single-entry.`
+      }</div>`;
+      out.appendChild(msg);
+    }
+
+    function renderCF(periodId){
+      const {p, txns, cb} = reportData(periodId);
+      const out = $("#rptCF");
+      out.innerHTML = "";
+      if(!p){ out.innerHTML = `<div class="help">Tiada tempoh laporan.</div>`; return; }
+
+      let inCash=0,outCash=0,inBank=0,outBank=0;
+      for(const t of txns){
+        const type = getAcct(t.accountId)?.type || "";
+        const isIn = (type==="Pendapatan"||type==="Liabiliti"||type==="Ekuiti");
+        const isOut = (type==="Perbelanjaan"||type==="Aset");
+        if(t.pay==="Tunai"){
+          if(isIn) inCash += t.amount;
+          else if(isOut) outCash += t.amount;
+        }else{
+          if(isIn) inBank += t.amount;
+          else if(isOut) outBank += t.amount;
+        }
+      }
+
+      out.appendChild(tableCard("Ringkasan Aliran Tunai", [
+        {label:"Baki Awal Tunai", value: fmtRM(cb.openCash)},
+        {label:"Inflow Tunai", value: fmtRM(inCash)},
+        {label:"Outflow Tunai", value: fmtRM(outCash)},
+        {label:"Perubahan Tunai", value: fmtRM(cb.dCash)},
+        {label:"Baki Akhir Tunai", value: fmtRM(cb.endCash)},
+        {label:"Baki Awal Bank", value: fmtRM(cb.openBank)},
+        {label:"Inflow Bank", value: fmtRM(inBank)},
+        {label:"Outflow Bank", value: fmtRM(outBank)},
+        {label:"Perubahan Bank", value: fmtRM(cb.dBank)},
+        {label:"Baki Akhir Bank", value: fmtRM(cb.endBank)}
+      ]));
+    }
+
+    /* ===== Multi-year compare ===== */
+    function renderCompare(){
+      const pick = $("#cmpPick");
+      const table = $("#cmpTable");
+      pick.innerHTML = "";
+      table.innerHTML = "";
+
+      if(!DATA._cmp) DATA._cmp = [];
+      const chosen = new Set(DATA._cmp);
+
+      // default: latest 2
+      if(chosen.size < 2){
+        const latest = [...DATA.periods].sort((a,b)=> (b.start||"").localeCompare(a.start||"")).slice(0,2);
+        latest.forEach(p => chosen.add(p.id));
+        DATA._cmp = Array.from(chosen);
+      }
+
+      for(const p of DATA.periods){
+        const el = document.createElement("div");
+        el.className = "item";
+        el.innerHTML = `
+          <div class="row" style="justify-content:space-between">
+            <label class="row" style="gap:8px">
+              <input type="checkbox" data-cmp="${p.id}" ${chosen.has(p.id) ? "checked" : ""}>
+              <b>${safe(p.label)}</b>
+            </label>
+            <span class="small">${fmtDateMY(p.start)}–${fmtDateMY(p.end)}</span>
+          </div>
+        `;
+        pick.appendChild(el);
+      }
+
+      $$("[data-cmp]").forEach(chk => chk.addEventListener("change", () => {
+        const id = chk.dataset.cmp;
+        if(chk.checked) chosen.add(id); else chosen.delete(id);
+        DATA._cmp = Array.from(chosen).slice(0,5);
+        markDirty();
+        renderCompare();
+      }));
+
+      const ids = Array.from(chosen).filter(id => DATA.periods.some(p => p.id===id)).slice(0,5);
+      if(ids.length < 2){
+        table.innerHTML = `<div class="help">Sila pilih sekurang-kurangnya 2 tempoh untuk dibandingkan.</div>`;
+        drawCompareChart([]);
+        return;
+      }
+
+      const rows = ids.map(id => {
+        const p = getPeriod(id);
+        const txns = txnsInPeriod(id);
+        const s = sumIncomeExpense(txns);
+        return {id, label:p.label, inc:s.inc, exp:s.exp, net:s.net};
+      });
+
+      const t = document.createElement("table");
+      t.innerHTML = `<thead><tr><th>Tempoh</th><th class="right-align">Jumlah Pendapatan</th><th class="right-align">Jumlah Perbelanjaan</th><th class="right-align">Surplus/Defisit</th></tr></thead><tbody></tbody>`;
+      const tb = t.querySelector("tbody");
+      for(const r of rows){
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td><b>${safe(r.label)}</b></td><td class="right-align">${fmtRM(r.inc)}</td><td class="right-align">${fmtRM(r.exp)}</td><td class="right-align">${fmtRM(r.net)}</td>`;
+        tb.appendChild(tr);
+      }
+      table.appendChild(t);
+
+      // common-size table (expense accounts as % of income)
+      if($("#togCommon").checked){
+        const expAccts = DATA.accounts.filter(a => a.type === "Perbelanjaan");
+        if(expAccts.length){
+          const el = document.createElement("div");
+          el.className = "item";
+          el.innerHTML = `<b>Peratus Perbelanjaan mengikut Akaun (berbanding Jumlah Pendapatan)</b>`;
+          const t2 = document.createElement("table");
+          t2.style.marginTop="10px";
+          t2.innerHTML = `<thead><tr><th>Akaun Perbelanjaan</th>${rows.map(r=>`<th class="right-align">${safe(r.label)}</th>`).join("")}</tr></thead><tbody></tbody>`;
+          const tb2 = t2.querySelector("tbody");
+          for(const a of expAccts){
+            const tr = document.createElement("tr");
+            const cells = rows.map(r => {
+              const tx = txnsInPeriod(r.id).filter(t=>t.accountId===a.id);
+              const amt = tx.reduce((s,x)=>s+(x.amount||0),0);
+              const pct = r.inc > 0 ? (amt/r.inc*100) : 0;
+              return `<td class="right-align">${pct.toFixed(1)}%</td>`;
+            }).join("");
+            tr.innerHTML = `<td>${safe(a.name)}</td>${cells}`;
+            tb2.appendChild(tr);
+          }
+          el.appendChild(t2);
+          table.appendChild(el);
+        }
+      }
+
+      drawCompareChart(rows);
+    }
+
+    function drawCompareChart(rows){
+      const c = $("#cSur");
+      const dpr = window.devicePixelRatio || 1;
+      c.width = c.clientWidth * dpr;
+      c.height = c.clientHeight * dpr;
+      const ctx = c.getContext("2d");
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+      const W = c.clientWidth, H = c.clientHeight;
+      ctx.clearRect(0,0,W,H);
+
+      if(!rows.length){
+        ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--muted");
+        ctx.font = "14px system-ui";
+        ctx.fillText("Tiada data untuk carta.", 12, 22);
+        return;
+      }
+
+      const pad = 34;
+      const plotW = W - pad*2;
+      const plotH = H - pad*2;
+      const values = rows.map(r=>r.net);
+      const maxAbs = Math.max(1, ...values.map(v=>Math.abs(v)));
+
+      // baseline 0
+      const y0 = pad + plotH/2;
+      ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--line");
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(pad, y0); ctx.lineTo(pad+plotW, y0); ctx.stroke();
+
+      const barW = (plotW/rows.length)*0.7;
+      const gap = (plotW/rows.length)*0.3;
+
+      const pri = getComputedStyle(document.documentElement).getPropertyValue("--pri").trim() || "#0f766e";
+
+      for(let i=0;i<rows.length;i++){
+        const v = rows[i].net;
+        const x = pad + i*(barW+gap) + gap/2;
+        const h = (Math.abs(v)/maxAbs) * (plotH/2 - 8);
+        const y = v>=0 ? (y0 - h) : y0;
+
+        // bar translucent
+        ctx.fillStyle = pri;
+        ctx.globalAlpha = 0.22;
+        ctx.fillRect(x,y,barW,h);
+        ctx.globalAlpha = 1;
+
+        // stripes pattern for accessibility
+        ctx.strokeStyle = pri;
+        ctx.lineWidth = 1;
+        for(let yy=y; yy<y+h; yy+=6){
+          ctx.beginPath(); ctx.moveTo(x,yy); ctx.lineTo(x+barW,yy); ctx.stroke();
+        }
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x,y,barW,h);
+
+        // label
+        ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--text");
+        ctx.font = "11px system-ui";
+        ctx.fillText(fmtRM(v), x, v>=0 ? (y-6) : (y+h+14));
+
+        ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--muted");
+        ctx.font = "11px system-ui";
+        ctx.fillText(rows[i].label, x, H-10);
+      }
+    }
+
+    function renderReport(){
+      fillPeriodSelect($("#selPeriodRpt"));
+      updateHdrPeriod();
+
+      const id = $("#selPeriodRpt").value || DATA.currentPeriodId;
+      renderPL(id);
+      renderBS(id);
+      renderCF(id);
+      renderCompare();
+    }
+
+    /* ===== Settings render ===== */
+    function renderSettings(){
+      // profile
+      $("#clubName").value = DATA.profile.clubName || "";
+      $("#regNo").value = DATA.profile.regNo || "";
+      $("#prepBy").value = DATA.profile.preparedBy || "";
+      $("#prepRole").value = DATA.profile.preparedRole || "";
+
+      // settings
+      $("#sym").value = DATA.settings.simbol || "RM";
+      $("#dec").value = String(DATA.settings.perpuluhan ?? 2);
+      $("#role").value = DATA.settings.role || "Bendahari";
+      $("#theme").value = DATA.settings.theme || "light";
+      $("#hiContrast").checked = !!DATA.settings.hiContrast;
+      $("#reduceMotion").checked = !!DATA.settings.reduceMotion;
+      $("#fontSize").value = DATA.settings.fontSize || "normal";
+      $("#tapSize").value = DATA.settings.tapSize || "normal";
+      $("#togAdvanced").checked = !!DATA.settings.advanced;
+
+      applyUX();
+      updateHdrPeriod();
+      renderAdvancedBlocks();
+    }
+
+    function renderAdvancedBlocks(){
+      const open = !!DATA.settings.advanced;
+      $("#advLocked").classList.toggle("hidden", open);
+      $("#advOpen").classList.toggle("hidden", !open);
+      $("#hdrMode").textContent = open ? "Mod Lanjutan" : "Mod Ringkas";
+      renderPeriods();
+      renderAccounts();
+    }
+
+    function renderPeriods(){
+      const list = $("#periodList");
+      list.innerHTML = "";
+      $("#periodEmpty").classList.toggle("hidden", DATA.periods.length>0);
+
+      for(const p of DATA.periods){
+        const el = document.createElement("div");
+        el.className = "item";
+        el.innerHTML = `
+          <div class="top">
+            <div style="min-width:0">
+              <h3>${safe(p.label)}</h3>
+              <div class="meta">
+                <span>${fmtDateMY(p.start)}–${fmtDateMY(p.end)}</span>
+                <span class="pill">Baki awal Tunai: ${fmtRM(Number(p.openingCash)||0)}</span>
+                <span class="pill">Baki awal Bank: ${fmtRM(Number(p.openingBank)||0)}</span>
+                ${p.id === DATA.currentPeriodId ? `<span class="pill pri">Tempoh semasa</span>` : ""}
+              </div>
+            </div>
+            <div class="row" style="flex-wrap:nowrap">
+              <button class="btn small" type="button" data-edit-period="${p.id}">Ubah</button>
+              ${p.id !== DATA.currentPeriodId ? `<button class="btn small" type="button" data-make-current="${p.id}">Jadikan Semasa</button>` : ""}
+            </div>
+          </div>
+        `;
+        list.appendChild(el);
+      }
+      $$("[data-edit-period]").forEach(b => b.addEventListener("click", () => openPeriodDlg(b.dataset.editPeriod)));
+      $$("[data-make-current]").forEach(b => b.addEventListener("click", () => {
+        DATA.currentPeriodId = b.dataset.makeCurrent;
+        markDirty();
+        renderAll();
+        toast("Tempoh semasa ditukar", getPeriod(DATA.currentPeriodId)?.label || "", null, null, 3000);
+      }));
+    }
+
+    function renderAccounts(){
+      const list = $("#acctList");
+      const q = ($("#qAcct").value || "").trim().toLowerCase();
+      const type = $("#fAcctType").value;
+      list.innerHTML = "";
+
+      const filtered = DATA.accounts.filter(a => {
+        if(type && a.type !== type) return false;
+        if(q && !(a.name||"").toLowerCase().includes(q) && !(a.note||"").toLowerCase().includes(q)) return false;
+        return true;
+      });
+
+      $("#acctEmpty").classList.toggle("hidden", filtered.length>0);
+
+      for(const a of filtered){
+        const el = document.createElement("div");
+        el.className = "item";
+        el.innerHTML = `
+          <div class="top">
+            <div style="min-width:0">
+              <h3>${safe(a.name)}</h3>
+              <div class="meta">
+                <span class="pill pri">${safe(a.type)}</span>
+                ${a.note ? `<span>${safe(a.note)}</span>` : `<span class="small">Tiada nota</span>`}
+              </div>
+            </div>
+            <div class="row" style="flex-wrap:nowrap">
+              <button class="btn small" type="button" data-edit-acct="${a.id}">Ubah</button>
+            </div>
+          </div>
+        `;
+        list.appendChild(el);
+      }
+      $$("[data-edit-acct]").forEach(b => b.addEventListener("click", () => openAcctDlg(b.dataset.editAcct)));
+    }
+
+    /* ===== Dialog: Txn ===== */
+    let editingTxn = null;
+
+    function ensureCOA(){
+      if(DATA.accounts.length) return true;
+      toast("Akaun/Kategori belum wujud", "Hidupkan Mod Lanjutan dan import akaun contoh dahulu.", null, null, 6500);
+      go("set");
+      DATA.settings.advanced = true;
+      $("#togAdvanced").checked = true;
+      renderSettings();
+      return false;
+    }
+
+    function openTxnDlg(id=null){
+      if(!ensureCOA()) return;
+
+      const dlg = $("#dlgTxn");
+      editingTxn = id ? DATA.txns.find(t => t.id === id) : null;
+      $("#errTxn").classList.add("hidden");
+      $("#errTxn").textContent = "";
+
+      const p = curPeriod();
+      $("#tPeriodLabel").value = p ? `${p.label} (${fmtDateMY(p.start)}–${fmtDateMY(p.end)})` : "Tiada";
+
+      // account options
+      const sel = $("#tAcct");
+      sel.innerHTML = "";
+      for(const a of DATA.accounts){
+        const o = document.createElement("option");
+        o.value = a.id;
+        o.textContent = `${a.name} (${a.type})`;
+        sel.appendChild(o);
+      }
+
+      if(editingTxn){
+        $("#dlgTxnTitle").textContent = "Ubah Transaksi";
+        $("#tDate").value = editingTxn.date || isoToday();
+        $("#tRef").value = editingTxn.ref || "";
+        $("#tDesc").value = editingTxn.desc || "";
+        $("#tAmt").value = String(editingTxn.amount ?? "");
+        $("#tAcct").value = editingTxn.accountId || (DATA.accounts[0]?.id || "");
+        $("#tPay").value = editingTxn.pay || "Tunai";
+        $("#btnDelTxn").classList.toggle("hidden", !canDelete());
+        $("#btnDelTxn").disabled = !canDelete();
+      }else{
+        $("#dlgTxnTitle").textContent = "Tambah Transaksi";
+        $("#tDate").value = isoToday();
+        $("#tRef").value = "";
+        $("#tDesc").value = "";
+        $("#tAmt").value = "";
+        $("#tAcct").value = DATA.accounts[0]?.id || "";
+        $("#tPay").value = "Tunai";
+        $("#btnDelTxn").classList.add("hidden");
+      }
+
+      $("#btnSaveTxn").disabled = !canEdit();
+      if(!canEdit()){
+        toast("Paparan terhad", "Anda tidak boleh simpan perubahan dalam paparan ini.", null, null, 4500);
+      }
+
+      dlg.showModal();
+    }
+
+    function validateTxn(){
+      const p = curPeriod();
+      if(!p) return {ok:false, msg:"Tiada Tempoh Laporan. Sila tambah Tempoh Laporan di Tetapan."};
+      const date = $("#tDate").value;
+      const desc = ($("#tDesc").value || "").trim();
+      const amt = toNum($("#tAmt").value);
+      const acct = $("#tAcct").value;
+      const pay = $("#tPay").value;
+      const ref = ($("#tRef").value || "").trim();
+
+      if(!date) return {ok:false, msg:"Tarikh wajib diisi."};
+      if(date < p.start || date > p.end) return {ok:false, msg:`Tarikh transaksi mesti dalam tempoh ${fmtDateMY(p.start)}–${fmtDateMY(p.end)}.`};
+      if(!desc) return {ok:false, msg:"Butiran wajib diisi."};
+      if(!Number.isFinite(amt) || amt <= 0) return {ok:false, msg:"Amaun mesti nombor dan lebih daripada 0."};
+      if(!acct) return {ok:false, msg:"Sila pilih Akaun/Kategori."};
+      if(pay !== "Tunai" && pay !== "Bank") return {ok:false, msg:"Sila pilih Tunai atau Bank."};
+
+      return {ok:true, date, desc, amt, acct, pay, ref};
+    }
+
+    function saveTxn(){
+      if(!canEdit()){
+        toast("Paparan terhad", "Anda tidak mempunyai kebenaran untuk simpan.", null, null, 4500);
+        return;
+      }
+      const v = validateTxn();
+      if(!v.ok){
+        $("#errTxn").textContent = v.msg;
+        $("#errTxn").classList.remove("hidden");
+        return;
+      }
+      const p = curPeriod();
+
+      if(editingTxn){
+        editingTxn.date = v.date;
+        editingTxn.ref = v.ref;
+        editingTxn.desc = v.desc;
+        editingTxn.amount = v.amt;
+        editingTxn.accountId = v.acct;
+        editingTxn.pay = v.pay;
+        editingTxn.updatedAt = Date.now();
+        markDirty();
+        toast("Transaksi dikemas kini", v.desc, null, null, 3500);
+      }else{
+        DATA.txns.push({
+          id: uid(),
+          date: v.date,
+          ref: v.ref,
+          desc: v.desc,
+          amount: v.amt,
+          accountId: v.acct,
+          pay: v.pay,
+          createdAt: Date.now(),
+          updatedAt: Date.now(),
+          periodId: p?.id || DATA.currentPeriodId
+        });
+        markDirty();
+        toast("Transaksi ditambah", v.desc, null, null, 3500);
+      }
+
+      $("#dlgTxn").close();
+      editingTxn = null;
+      renderAll();
+    }
+
+    function deleteTxn(){
+      if(!canDelete()){
+        toast("Paparan terhad", "Hanya Bendahari boleh memadam.", null, null, 4500);
+        return;
+      }
+      if(!editingTxn) return;
+      const t = editingTxn;
+      const idx = DATA.txns.findIndex(x => x.id === t.id);
+      if(idx<0) return;
+      DATA.txns.splice(idx,1);
+      markDirty();
+      $("#dlgTxn").close();
+      editingTxn = null;
+
+      const label = `${t.desc} (${fmtDateMY(t.date)} - ${fmtRM(t.amount)})`;
+      pushUndo(label, () => {
+        DATA.txns.push(t);
+        markDirty();
+        renderAll();
+      });
+      renderAll();
+    }
+
+    /* ===== Dialog: Period ===== */
+    let editingPeriod = null;
+
+    function openPeriodDlg(id=null){
+      const dlg = $("#dlgPeriod");
+      editingPeriod = id ? DATA.periods.find(p => p.id === id) : null;
+      $("#errPeriod").classList.add("hidden");
+      $("#errPeriod").textContent = "";
+
+      if(editingPeriod){
+        $("#dlgPeriodTitle").textContent = "Ubah Tempoh Laporan";
+        $("#pLabel").value = editingPeriod.label || "";
+        $("#pStart").value = editingPeriod.start || "";
+        $("#pEnd").value = editingPeriod.end || "";
+        $("#pOpenCash").value = String(editingPeriod.openingCash ?? 0);
+        $("#pOpenBank").value = String(editingPeriod.openingBank ?? 0);
+        $("#pMakeCurrent").value = (editingPeriod.id === DATA.currentPeriodId) ? "yes" : "no";
+        $("#btnDelPeriod").classList.remove("hidden");
+      }else{
+        $("#dlgPeriodTitle").textContent = "Tambah Tempoh Laporan";
+        $("#pLabel").value = "";
+        $("#pStart").value = "";
+        $("#pEnd").value = "";
+        $("#pOpenCash").value = "0";
+        $("#pOpenBank").value = "0";
+        $("#pMakeCurrent").value = "yes";
+        $("#btnDelPeriod").classList.remove("hidden");
+        $("#btnDelPeriod").textContent = "Padam";
+        $("#btnDelPeriod").disabled = true;
+      }
+
+      dlg.showModal();
+    }
+
+    function validatePeriod(){
+      const label = ($("#pLabel").value||"").trim();
+      const start = $("#pStart").value;
+      const end = $("#pEnd").value;
+      const oc = toNum($("#pOpenCash").value); const ob = toNum($("#pOpenBank").value);
+      const makeCurrent = $("#pMakeCurrent").value === "yes";
+      if(!label) return {ok:false, msg:"Label wajib diisi."};
+      if(!start || !end) return {ok:false, msg:"Tarikh mula dan tamat wajib diisi."};
+      if(start > end) return {ok:false, msg:"Tarikh mula mesti sebelum/ sama dengan tarikh tamat."};
+      if(!Number.isFinite(oc) || oc<0) return {ok:false, msg:"Baki awal Tunai mesti nombor (>=0)."};
+      if(!Number.isFinite(ob) || ob<0) return {ok:false, msg:"Baki awal Bank mesti nombor (>=0)."};
+      return {ok:true, label, start, end, oc, ob, makeCurrent};
+    }
+
+    function savePeriod(){
+      const v = validatePeriod();
+      if(!v.ok){
+        $("#errPeriod").textContent = v.msg;
+        $("#errPeriod").classList.remove("hidden");
+        return;
+      }
+
+      if(editingPeriod){
+        editingPeriod.label = v.label;
+        editingPeriod.start = v.start;
+        editingPeriod.end = v.end;
+        editingPeriod.openingCash = v.oc;
+        editingPeriod.openingBank = v.ob;
+        if(v.makeCurrent) DATA.currentPeriodId = editingPeriod.id;
+        markDirty();
+        toast("Tempoh dikemas kini", v.label, null, null, 3500);
+      }else{
+        const p = { id: uid(), label:v.label, start:v.start, end:v.end, openingCash:v.oc, openingBank:v.ob, createdAt:Date.now() };
+        DATA.periods.push(p);
+        if(v.makeCurrent) DATA.currentPeriodId = p.id;
+        markDirty();
+        toast("Tempoh ditambah", v.label, null, null, 3500);
+      }
+
+      $("#dlgPeriod").close();
+      editingPeriod = null;
+      renderAll();
+    }
+
+    function deletePeriod(){
+      if(!editingPeriod) return;
+      const p = editingPeriod;
+      if(p.id === DATA.currentPeriodId){
+        toast("Tidak boleh padam", "Tempoh semasa tidak boleh dipadam. Tukar tempoh semasa dahulu.", null, null, 5500);
+        return;
+      }
+      const idx = DATA.periods.findIndex(x => x.id === p.id);
+      if(idx<0) return;
+
+      // simpan juga transaksi dalam tempoh (untuk undo)
+      const txns = DATA.txns.filter(t => t.date >= p.start && t.date <= p.end);
+      DATA.periods.splice(idx,1);
+      DATA.txns = DATA.txns.filter(t => !(t.date >= p.start && t.date <= p.end));
+      markDirty();
+      $("#dlgPeriod").close();
+      editingPeriod = null;
+
+      pushUndo(`Tempoh dipadam: ${p.label} (termasuk ${txns.length} transaksi)`, () => {
+        DATA.periods.push(p);
+        DATA.txns.push(...txns);
+        markDirty();
+        renderAll();
+      });
+
+      renderAll();
+    }
+
+    /* ===== Dialog: Account ===== */
+    let editingAcct = null;
+
+    function openAcctDlg(id=null){
+      const dlg = $("#dlgAcct");
+      editingAcct = id ? DATA.accounts.find(a => a.id === id) : null;
+      $("#errAcct").classList.add("hidden");
+      $("#errAcct").textContent = "";
+
+      if(editingAcct){
+        $("#dlgAcctTitle").textContent = "Ubah Akaun/Kategori";
+        $("#aName").value = editingAcct.name || "";
+        $("#aType").value = editingAcct.type || "Pendapatan";
+        $("#aNote").value = editingAcct.note || "";
+        $("#btnDelAcct").classList.remove("hidden");
+        $("#btnDelAcct").disabled = false;
+      }else{
+        $("#dlgAcctTitle").textContent = "Tambah Akaun/Kategori";
+        $("#aName").value = "";
+        $("#aType").value = "Pendapatan";
+        $("#aNote").value = "";
+        $("#btnDelAcct").classList.remove("hidden");
+        $("#btnDelAcct").disabled = true;
+      }
+      dlg.showModal();
+    }
+
+    function validateAcct(){
+      const name = ($("#aName").value||"").trim();
+      const type = $("#aType").value;
+      const note = ($("#aNote").value||"").trim();
+      if(!name) return {ok:false, msg:"Nama akaun/kategori wajib diisi."};
+      if(!type) return {ok:false, msg:"Jenis akaun wajib dipilih."};
+      return {ok:true, name, type, note};
+    }
+
+    function saveAcct(){
+      const v = validateAcct();
+      if(!v.ok){
+        $("#errAcct").textContent = v.msg;
+        $("#errAcct").classList.remove("hidden");
+        return;
+      }
+      if(editingAcct){
+        editingAcct.name = v.name;
+        editingAcct.type = v.type;
+        editingAcct.note = v.note;
+        markDirty();
+        toast("Akaun dikemas kini", v.name, null, null, 3500);
+      }else{
+        DATA.accounts.push({ id: uid(), name:v.name, type:v.type, note:v.note, createdAt:Date.now() });
+        markDirty();
+        toast("Akaun ditambah", v.name, null, null, 3500);
+      }
+      $("#dlgAcct").close();
+      editingAcct = null;
+      renderAll();
+    }
+
+    function deleteAcct(){
+      if(!editingAcct) return;
+
+      // blok padam jika digunakan oleh transaksi
+      const used = DATA.txns.some(t => t.accountId === editingAcct.id);
+      if(used){
+        toast("Tidak boleh padam", "Akaun ini digunakan oleh transaksi. Tukar transaksi dulu atau import akaun baharu.", null, null, 6500);
+        return;
+      }
+      const a = editingAcct;
+      const idx = DATA.accounts.findIndex(x => x.id === a.id);
+      if(idx<0) return;
+      DATA.accounts.splice(idx,1);
+      markDirty();
+      $("#dlgAcct").close();
+      editingAcct = null;
+
+      pushUndo(`Akaun dipadam: ${a.name}`, () => {
+        DATA.accounts.push(a);
+        markDirty();
+        renderAll();
+      });
+
+      renderAll();
+    }
+
+    /* ===== COA contoh BM ===== */
+    function importCOA(){
+      const contoh = [
+        // Pendapatan
+        ["Pendapatan","Yuran Keahlian"], ["Pendapatan","Sumbangan/Derma"], ["Pendapatan","Jualan/Program"], ["Pendapatan","Geran/Peruntukan"],
+        // Perbelanjaan
+        ["Perbelanjaan","Jamuan & Makanan"], ["Perbelanjaan","Pengangkutan"], ["Perbelanjaan","Percetakan & Alat Tulis"], ["Perbelanjaan","Sewa/Utiliti"],
+        ["Perbelanjaan","Hadiah & Cenderamata"], ["Perbelanjaan","Peralatan & Bahan Program"], ["Perbelanjaan","Yuran/Lesen"], ["Perbelanjaan","Lain-lain Perbelanjaan"],
+        // Aset/Liabiliti/Ekuiti (ringkas)
+        ["Aset","Peralatan (Aset)"], ["Liabiliti","Hutang Pembekal"], ["Ekuiti","Dana Terkumpul"]
+      ];
+      // elak duplikasi nama+jenis
+      const exists = new Set(DATA.accounts.map(a => `${a.type}::${(a.name||"").toLowerCase()}`));
+      let added = 0;
+      for(const [type,name] of contoh){
+        const k = `${type}::${name.toLowerCase()}`;
+        if(exists.has(k)) continue;
+        DATA.accounts.push({id:uid(), type, name, note:"", createdAt:Date.now()});
+        exists.add(k); added++;
+      }
+      markDirty();
+      toast("Akaun contoh diimport", `${added} akaun ditambah`, null, null, 4500);
+      renderAll();
+    }
+
+    /* ===== Demo data ===== */
+    function addDemoData(){
+      if(!DATA.accounts.length) importCOA();
+      const p = curPeriod();
+      if(!p) return;
+      const acct = (name, type) => DATA.accounts.find(a => a.name===name && a.type===type)?.id || DATA.accounts.find(a=>a.type===type)?.id;
+
+      const demo = [
+        {date:p.start, ref:"D001", desc:"Baki awal dibawa masuk (rekod)", amount:1, accountId: acct("Dana Terkumpul","Ekuiti"), pay:"Bank"},
+        {date:isoToday(), ref:"R001", desc:"Yuran keahlian", amount:200, accountId: acct("Yuran Keahlian","Pendapatan"), pay:"Tunai"},
+        {date:isoToday(), ref:"R002", desc:"Sumbangan komuniti", amount:300, accountId: acct("Sumbangan/Derma","Pendapatan"), pay:"Bank"},
+        {date:isoToday(), ref:"B001", desc:"Jamuan mesyuarat", amount:120, accountId: acct("Jamuan & Makanan","Perbelanjaan"), pay:"Tunai"},
+        {date:isoToday(), ref:"B002", desc:"Percetakan banner", amount:80, accountId: acct("Percetakan & Alat Tulis","Perbelanjaan"), pay:"Bank"}
+      ];
+
+      const ok = demo.filter(t => t.accountId);
+      for(const t of ok){
+        DATA.txns.push({ id:uid(), ...t, createdAt:Date.now(), updatedAt:Date.now(), periodId:p.id });
+      }
+      markDirty();
+      toast("Contoh data dimasukkan", `${ok.length} transaksi demo ditambah`, null, null, 4500);
+      renderAll();
+    }
+
+    /* ===== Backup/Import/WhatsApp ===== */
+    function buildBackupObject(){
+      return DATA;
+    }
+
+    function backupJSON(){
+      const name = `sandaran-kelab-${isoToday()}.json`;
+      const json = JSON.stringify(buildBackupObject(), null, 2);
+      download(name, json, "application/json;charset=utf-8");
+      toast("Sandaran siap", name, null, null, 3500);
+    }
+
+    async function shareBackup(){
+      const name = `sandaran-kelab-${isoToday()}.json`;
+      const blob = new Blob([JSON.stringify(buildBackupObject(), null, 2)], {type:"application/json"});
+      if(navigator.share && navigator.canShare && navigator.canShare({files:[new File([blob], name, {type:"application/json"})]})){
+        try{
+          const f = new File([blob], name, {type:"application/json"});
+          await navigator.share({title:"Sandaran Kewangan Kelab", text:"Sandaran JSON", files:[f]});
+        }catch{}
+      }else{
+        // fallback: download sahaja
+        backupJSON();
+        toast("Kongsi tidak disokong", "Pelayar ini tidak menyokong kongsi fail. Fail telah dimuat turun.", null, null, 6500);
+      }
+    }
+
+    function periodSummaryText(periodId){
+      const p = getPeriod(periodId) || curPeriod();
+      if(!p) return "Tiada tempoh laporan.";
+      const txns = txnsInPeriod(p.id);
+      const sum = sumIncomeExpense(txns);
+      const cb = cashBankBalances(txns, p.id);
+      const club = DATA.profile.clubName || "Kelab";
+      return [
+        `Ringkasan Kewangan: ${club}`,
+        `Tempoh: ${p.label} (${fmtDateMY(p.start)}–${fmtDateMY(p.end)})`,
+        `Jumlah Pendapatan: ${fmtRM(sum.inc)}`,
+        `Jumlah Perbelanjaan: ${fmtRM(sum.exp)}`,
+        `Surplus/Defisit: ${fmtRM(sum.net)}`,
+        `Baki Akhir Tunai: ${fmtRM(cb.endCash)}`,
+        `Baki Akhir Bank: ${fmtRM(cb.endBank)}`,
+        `Bilangan transaksi: ${txns.length}`,
+        DATA.profile.preparedBy ? `Disediakan oleh: ${DATA.profile.preparedBy}${DATA.profile.preparedRole ? " ("+DATA.profile.preparedRole+")" : ""}` : ""
+      ].filter(Boolean).join("\n");
+    }
+
+    function genSummary(){
+      const id = DATA.currentPeriodId;
+      $("#summaryText").value = periodSummaryText(id);
+      toast("Ringkasan dijana", "Anda boleh salin atau buka WhatsApp.", null, null, 3500);
+    }
+    async function copySummary(){
+      const t = $("#summaryText").value || periodSummaryText(DATA.currentPeriodId);
+      await copyText(t);
+      toast("Disalin", "Ringkasan telah disalin ke papan klip.", null, null, 3000);
+    }
+    function openWhatsApp(){
+      const t = $("#summaryText").value || periodSummaryText(DATA.currentPeriodId);
+      const url = "https://wa.me/?text=" + encodeURIComponent(t);
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
+
+    async function previewImport(){
+      const f = $("#importFile").files?.[0];
+      if(!f){ $("#importPreview").textContent=""; return null; }
+      try{
+        const txt = await f.text();
+        const obj = migrate(JSON.parse(txt));
+        $("#importPreview").textContent = `Fail import: ${f.name} | Tempoh: ${obj.periods?.length||0} | Akaun: ${obj.accounts?.length||0} | Transaksi: ${obj.txns?.length||0}`;
+        return obj;
+      }catch{
+        $("#importPreview").textContent = "Fail tidak sah. Pastikan fail JSON sandaran.";
+        return null;
+      }
+    }
+
+    async function doImport(){
+      const obj = await previewImport();
+      if(!obj) return;
+      const mode = $("#importMode").value;
+      if(mode === "replace"){
+        DATA = obj;
+        markDirty();
+        save();
+        toast("Import berjaya (Ganti)", "Semua data telah diganti.", null, null, 4500);
+        renderAll();
+        return;
+      }
+
+      // merge: gabung tanpa duplikasi asas
+      const mapPeriod = new Map(DATA.periods.map(p => [`${p.label}::${p.start}::${p.end}`, p.id]));
+      for(const p of obj.periods || []){
+        const k = `${p.label}::${p.start}::${p.end}`;
+        if(mapPeriod.has(k)) continue;
+        const newP = {...p, id: uid(), createdAt: Date.now()};
+        DATA.periods.push(newP);
+        mapPeriod.set(k, newP.id);
+      }
+
+      const mapAcct = new Map(DATA.accounts.map(a => [`${a.type}::${(a.name||"").toLowerCase()}`, a.id]));
+      for(const a of obj.accounts || []){
+        const k = `${a.type}::${(a.name||"").toLowerCase()}`;
+        if(mapAcct.has(k)) continue;
+        const newA = {...a, id: uid(), createdAt: Date.now()};
+        DATA.accounts.push(newA);
+        mapAcct.set(k, newA.id);
+      }
+
+      // transaksi: elak duplikasi melalui (date, amount, desc, ref)
+      const sig = (t) => `${t.date}::${t.amount}::${(t.desc||"").toLowerCase()}::${(t.ref||"").toLowerCase()}::${t.pay}`;
+      const exist = new Set(DATA.txns.map(sig));
+      let added = 0;
+      for(const t of obj.txns || []){
+        const s = sig(t);
+        if(exist.has(s)) continue;
+        // map account if possible
+        const a = (obj.accounts || []).find(x => x.id === t.accountId);
+        const k = a ? `${a.type}::${(a.name||"").toLowerCase()}` : "";
+        const mappedAcctId = k && mapAcct.get(k) ? mapAcct.get(k) : t.accountId;
+        DATA.txns.push({...t, id: uid(), accountId: mappedAcctId, createdAt: Date.now(), updatedAt: Date.now()});
+        exist.add(s);
+        added++;
+      }
+
+      if(!DATA.currentPeriodId || !DATA.periods.some(p => p.id === DATA.currentPeriodId)){
+        DATA.currentPeriodId = DATA.periods[0]?.id || "";
+      }
+
+      markDirty();
+      toast("Import berjaya (Gabung)", `${added} transaksi baharu ditambah.`, null, null, 5000);
+      renderAll();
+    }
+
+    /* ===== CSV export ===== */
+    function exportCSV(name, headers, rows){
+      const content = [headers, ...rows].map(r => r.map(csvEsc).join(",")).join("\n");
+      download(name, content, "text/csv;charset=utf-8");
+    }
+
+    function exportPLCSV(periodId){
+      const {p, txns} = reportData(periodId);
+      if(!p) return;
+      const inc = new Map(); const exp = new Map();
+      for(const t of txns){
+        const a = getAcct(t.accountId);
+        if(a?.type === "Pendapatan") inc.set(a.id, (inc.get(a.id)||0)+t.amount);
+        if(a?.type === "Perbelanjaan") exp.set(a.id, (exp.get(a.id)||0)+t.amount);
+      }
+      const rows = [];
+      for(const [id,val] of inc.entries()) rows.push([p.label,"Pendapatan", getAcct(id)?.name||"Akaun tidak ditemui", val]);
+      for(const [id,val] of exp.entries()) rows.push([p.label,"Perbelanjaan", getAcct(id)?.name||"Akaun tidak ditemui", val]);
+      const totalInc = Array.from(inc.values()).reduce((s,x)=>s+x,0);
+      const totalExp = Array.from(exp.values()).reduce((s,x)=>s+x,0);
+      rows.push([p.label,"Pendapatan","Jumlah Pendapatan", totalInc]);
+      rows.push([p.label,"Perbelanjaan","Jumlah Perbelanjaan", totalExp]);
+      rows.push([p.label,"Keputusan","Surplus/Defisit", totalInc-totalExp]);
+      exportCSV(`untung-rugi-${p.label}.csv`, ["Tempoh","Bahagian","Akaun","Amaun"], rows);
+    }
+
+    function exportBSCsv(periodId){
+      const {p, txns, sum, cb} = reportData(periodId);
+      if(!p) return;
+      const assets = cb.endCash + cb.endBank;
+      let liab=0, eq=0;
+      for(const t of txns){
+        const type = getAcct(t.accountId)?.type || "";
+        if(type==="Liabiliti") liab += t.amount;
+        if(type==="Ekuiti") eq += t.amount;
+      }
+      const eq2 = eq + sum.net;
+      const le = liab + eq2;
+      const diff = assets - le;
+
+      const rows = [
+        [p.label,"Aset","Tunai", cb.endCash],
+        [p.label,"Aset","Bank", cb.endBank],
+        [p.label,"Aset","Jumlah Aset", assets],
+        [p.label,"Liabiliti","Jumlah Liabiliti", liab],
+        [p.label,"Ekuiti","Ekuiti (transaksi)", eq],
+        [p.label,"Ekuiti","Surplus/Defisit", sum.net],
+        [p.label,"Ekuiti","Jumlah Ekuiti", eq2],
+        [p.label,"Jumlah","Liabiliti + Ekuiti", le],
+        [p.label,"Semakan","Perbezaan (Aset - (L+E))", diff]
+      ];
+      exportCSV(`kedudukan-kewangan-${p.label}.csv`, ["Tempoh","Bahagian","Perkara","Amaun"], rows);
+    }
+
+    function exportCFCsv(periodId){
+      const {p, txns, cb} = reportData(periodId);
+      if(!p) return;
+      let inCash=0,outCash=0,inBank=0,outBank=0;
+      for(const t of txns){
+        const type = getAcct(t.accountId)?.type || "";
+        const isIn = (type==="Pendapatan"||type==="Liabiliti"||type==="Ekuiti");
+        const isOut = (type==="Perbelanjaan"||type==="Aset");
+        if(t.pay==="Tunai"){
+          if(isIn) inCash += t.amount; else if(isOut) outCash += t.amount;
+        }else{
+          if(isIn) inBank += t.amount; else if(isOut) outBank += t.amount;
+        }
+      }
+      const rows = [
+        [p.label,"Tunai","Baki Awal", cb.openCash],
+        [p.label,"Tunai","Inflow", inCash],
+        [p.label,"Tunai","Outflow", outCash],
+        [p.label,"Tunai","Perubahan", cb.dCash],
+        [p.label,"Tunai","Baki Akhir", cb.endCash],
+        [p.label,"Bank","Baki Awal", cb.openBank],
+        [p.label,"Bank","Inflow", inBank],
+        [p.label,"Bank","Outflow", outBank],
+        [p.label,"Bank","Perubahan", cb.dBank],
+        [p.label,"Bank","Baki Akhir", cb.endBank],
+      ];
+      exportCSV(`aliran-tunai-${p.label}.csv`, ["Tempoh","Kaedah","Perkara","Amaun"], rows);
+    }
+
+    function exportCompareCsv(){
+      const chosen = new Set(DATA._cmp || []);
+      const ids = Array.from(chosen).filter(id => DATA.periods.some(p => p.id===id)).slice(0,5);
+      if(ids.length < 2){
+        toast("Tidak cukup tempoh", "Pilih sekurang-kurangnya 2 tempoh.", null, null, 4500);
+        return;
+      }
+      const rows = ids.map(id => {
+        const p = getPeriod(id);
+        const s = sumIncomeExpense(txnsInPeriod(id));
+        return [p.label, s.inc, s.exp, s.net];
+      });
+      exportCSV("perbandingan-multi-tahun.csv", ["Tempoh","Jumlah Pendapatan","Jumlah Perbelanjaan","Surplus/Defisit"], rows);
+    }
+
+    /* ===== Reset all ===== */
+    function resetAll(){
+      $("#resetText").value = "";
+      $("#errReset").classList.add("hidden");
+      $("#errReset").textContent = "";
+      $("#dlgReset").showModal();
+    }
+    function confirmReset(){
+      const t = ($("#resetText").value||"").trim();
+      if(t !== "RESET"){
+        $("#errReset").textContent = "Sila taip RESET dengan betul.";
+        $("#errReset").classList.remove("hidden");
+        return;
+      }
+      localStorage.removeItem(KEY);
+      DATA = defaults();
+      setSaveStatus("ok","Disimpan");
+      toast("Set semula berjaya", "Data telah dipulihkan kepada keadaan lalai.", null, null, 4500);
+      $("#dlgReset").close();
+      renderAll();
+    }
+
+    /* ===== Demo mode toggle (Latihan) ===== */
+    let snapshotReal = null;
+    function toggleDemo(){
+      if(!DATA.meta.demoMode){
+        // simpan snapshot data sebenar dalam memori
+        snapshotReal = JSON.parse(JSON.stringify(DATA));
+        DATA.meta.demoMode = true;
+        addDemoData();
+        toast("Mod Latihan diaktifkan", "Data demo telah dimasukkan. Sandaran demo berasingan disyorkan.", null, null, 6000);
+      }else{
+        if(snapshotReal){
+          DATA = snapshotReal;
+          snapshotReal = null;
+          markDirty();
+          save();
+          toast("Mod Latihan dimatikan", "Data asal dipulihkan.", null, null, 4500);
+        }else{
+          DATA.meta.demoMode = false;
+          markDirty();
+          toast("Mod Latihan dimatikan", "Tiada snapshot ditemui. Data semasa dikekalkan.", null, null, 4500);
+        }
+      }
+      renderAll();
+    }
+
+    /* ===== Render all ===== */
+    function renderAll(){
+      applyUX();
+      fillPeriodSelect($("#selPeriodHome"));
+      fillPeriodSelect($("#selPeriodTxn"));
+      fillPeriodSelect($("#selPeriodRpt"));
+      updateHdrPeriod();
+
+      if(!pages.home.classList.contains("hidden")) renderHome();
+      if(!pages.txn.classList.contains("hidden")) renderTxn();
+      if(!pages.rpt.classList.contains("hidden")) renderReport();
+      if(!pages.set.classList.contains("hidden")) renderSettings();
+
+      // also refresh filter account select
+      fillAccountSelect($("#fAccount"), true);
+    }
+
+    /* ===== Wire events ===== */
+    // navigation buttons
+    $("#navHome").addEventListener("click", ()=>go("home"));
+    $("#navTxn").addEventListener("click", ()=>go("txn"));
+    $("#navReport").addEventListener("click", ()=>go("rpt"));
+    $("#navSettings").addEventListener("click", ()=>go("set"));
+
+    // header quick actions
+    $("#btnQuickAdd").addEventListener("click", ()=>openTxnDlg(null));
+    $("#btnQuickBackup").addEventListener("click", ()=>{ go("set"); $("#accBackup").dataset.open="yes"; $("#btnAccBackup").setAttribute("aria-expanded","true"); });
+
+    // Home actions
+    $("#btnAddFromHome").addEventListener("click", ()=>openTxnDlg(null));
+    $("#btnBackupFromHome").addEventListener("click", ()=>{ go("set"); $("#accBackup").dataset.open="yes"; $("#btnAccBackup").setAttribute("aria-expanded","true"); });
+    $("#btnGoReport").addEventListener("click", ()=>go("rpt"));
+    $("#selPeriodHome").addEventListener("change", (e)=>{ DATA.currentPeriodId = e.target.value; markDirty(); renderAll(); });
+
+    // Guide accordion + wizard (simple)
+    $("#btnAccGuide").addEventListener("click", ()=>toggleAcc($("#accGuide"), $("#btnAccGuide")));
+    $("#btnWizard").addEventListener("click", ()=>{
+      toast("Panduan Cepat", "1) Mod Lanjutan 2) Tambah Tempoh 3) Import Akaun 4) Tambah Transaksi. Anda boleh mula di Tetapan.", null, null, 7500);
+      go("set");
+    });
+    $("#btnWizard2").addEventListener("click", ()=>$("#btnWizard").click());
+    $("#btnDemo").addEventListener("click", ()=>toggleDemo());
+
+    // Txn page
+    $("#selPeriodTxn").addEventListener("change", (e)=>{ DATA.currentPeriodId = e.target.value; markDirty(); renderAll(); });
+    $("#btnAddTxn").addEventListener("click", ()=>openTxnDlg(null));
+    $("#qTxn").addEventListener("input", renderTxn);
+    $("#btnClearQ").addEventListener("click", ()=>{ $("#qTxn").value=""; renderTxn(); });
+    $("#btnAccFilter").addEventListener("click", ()=>toggleAcc($("#accFilter"), $("#btnAccFilter")));
+    ["fStart","fEnd","fType","fAccount","fPay","fSort"].forEach(id => $("#"+id).addEventListener("change", renderTxn));
+    $("#btnResetFilter").addEventListener("click", ()=>{
+      $("#fStart").value=""; $("#fEnd").value=""; $("#fType").value=""; $("#fAccount").value=""; $("#fPay").value=""; $("#fSort").value="desc";
+      renderTxn();
+    });
+
+    // Report
+    $("#selPeriodRpt").addEventListener("change", (e)=>{ DATA.currentPeriodId = e.target.value; markDirty(); renderAll(); });
+    $("#btnPrint").addEventListener("click", ()=>window.print());
+    $("#btnAccPL").addEventListener("click", ()=>toggleAcc($("#accPL"), $("#btnAccPL")));
+    $("#btnAccBS").addEventListener("click", ()=>toggleAcc($("#accBS"), $("#btnAccBS")));
+    $("#btnAccCF").addEventListener("click", ()=>toggleAcc($("#accCF"), $("#btnAccCF")));
+    $("#btnAccCompare").addEventListener("click", ()=>toggleAcc($("#accCompare"), $("#btnAccCompare")));
+    $("#btnCsvPL").addEventListener("click", ()=>exportPLCSV($("#selPeriodRpt").value || DATA.currentPeriodId));
+    $("#btnCsvBS").addEventListener("click", ()=>exportBSCsv($("#selPeriodRpt").value || DATA.currentPeriodId));
+    $("#btnCsvCF").addEventListener("click", ()=>exportCFCsv($("#selPeriodRpt").value || DATA.currentPeriodId));
+    $("#btnCsvCompare").addEventListener("click", ()=>exportCompareCsv());
+    $("#togCommon").addEventListener("change", renderCompare);
+
+    // Settings accordions
+    $("#btnAccA11y").addEventListener("click", ()=>toggleAcc($("#accA11y"), $("#btnAccA11y")));
+    $("#btnAccBackup").addEventListener("click", ()=>toggleAcc($("#accBackup"), $("#btnAccBackup")));
+    $("#btnAccAdvanced").addEventListener("click", ()=>toggleAcc($("#accAdvanced"), $("#btnAccAdvanced")));
+    $("#btnAccHelp").addEventListener("click", ()=>toggleAcc($("#accHelp"), $("#btnAccHelp")));
+    $("#btnAccPeriods").addEventListener("click", ()=>toggleAcc($("#accPeriods"), $("#btnAccPeriods")));
+    $("#btnAccAccounts").addEventListener("click", ()=>toggleAcc($("#accAccounts"), $("#btnAccAccounts")));
+
+    // Settings changes
+    function bindSetting(el, fn){
+      el.addEventListener("change", () => { fn(); markDirty(); renderAll(); });
+      el.addEventListener("input", () => { fn(); markDirty(); applyUX(); });
+    }
+    bindSetting($("#clubName"), () => DATA.profile.clubName = $("#clubName").value);
+    bindSetting($("#regNo"), () => DATA.profile.regNo = $("#regNo").value);
+    bindSetting($("#prepBy"), () => DATA.profile.preparedBy = $("#prepBy").value);
+    bindSetting($("#prepRole"), () => DATA.profile.preparedRole = $("#prepRole").value);
+
+    bindSetting($("#sym"), () => DATA.settings.simbol = $("#sym").value || "RM");
+    bindSetting($("#dec"), () => DATA.settings.perpuluhan = Number($("#dec").value));
+    bindSetting($("#role"), () => DATA.settings.role = $("#role").value);
+    bindSetting($("#theme"), () => DATA.settings.theme = $("#theme").value);
+    bindSetting($("#hiContrast"), () => DATA.settings.hiContrast = $("#hiContrast").checked);
+    bindSetting($("#reduceMotion"), () => DATA.settings.reduceMotion = $("#reduceMotion").checked);
+    bindSetting($("#fontSize"), () => DATA.settings.fontSize = $("#fontSize").value);
+    bindSetting($("#tapSize"), () => DATA.settings.tapSize = $("#tapSize").value);
+
+    $("#togAdvanced").addEventListener("change", () => {
+      DATA.settings.advanced = $("#togAdvanced").checked;
+      markDirty();
+      renderAll();
+    });
+
+    // Backup & share
+    $("#btnBackup").addEventListener("click", backupJSON);
+    $("#btnShareBackup").addEventListener("click", shareBackup);
+    $("#btnBackup2").addEventListener("click", backupJSON);
+    $("#btnGenSummary").addEventListener("click", genSummary);
+    $("#btnCopySummary").addEventListener("click", copySummary);
+    $("#btnWhatsApp").addEventListener("click", openWhatsApp);
+    $("#importFile").addEventListener("change", previewImport);
+    $("#btnImport").addEventListener("click", doImport);
+
+    // Advanced actions
+    $("#btnAddPeriod").addEventListener("click", ()=>openPeriodDlg(null));
+    $("#btnAddAccount").addEventListener("click", ()=>openAcctDlg(null));
+    $("#btnImportCOA").addEventListener("click", importCOA);
+    $("#qAcct").addEventListener("input", renderAccounts);
+    $("#fAcctType").addEventListener("change", renderAccounts);
+    $("#btnDemoData").addEventListener("click", addDemoData);
+    $("#btnResetAll").addEventListener("click", resetAll);
+
+    // Period dialog buttons
+    $("#btnClosePeriod").addEventListener("click", ()=>{ $("#dlgPeriod").close(); editingPeriod=null; });
+    $("#btnSavePeriod").addEventListener("click", savePeriod);
+    $("#btnDelPeriod").addEventListener("click", deletePeriod);
+
+    // Account dialog buttons
+    $("#btnCloseAcct").addEventListener("click", ()=>{ $("#dlgAcct").close(); editingAcct=null; });
+    $("#btnSaveAcct").addEventListener("click", saveAcct);
+    $("#btnDelAcct").addEventListener("click", deleteAcct);
+
+    // Txn dialog buttons
+    $("#btnCloseTxn").addEventListener("click", ()=>{ $("#dlgTxn").close(); editingTxn=null; });
+    $("#btnSaveTxn").addEventListener("click", saveTxn);
+    $("#btnDelTxn").addEventListener("click", deleteTxn);
+
+    // Reset dialog
+    $("#btnCloseReset").addEventListener("click", ()=>$("#dlgReset").close());
+    $("#btnConfirmReset").addEventListener("click", confirmReset);
+
+    // Period select sync across pages
+    ["selPeriodHome","selPeriodTxn","selPeriodRpt"].forEach(id => {
+      $("#"+id).addEventListener("change", (e)=>{
+        DATA.currentPeriodId = e.target.value;
+        markDirty();
+        renderAll();
+      });
+    });
+
+    // Initial
+    setSaveStatus("ok","Disimpan");
+    applyUX();
+    renderAll();
+    go("home");
+
+    // Resize for chart redraw
+    window.addEventListener("resize", () => {
+      if(!pages.rpt.classList.contains("hidden")) renderCompare();
+    });
+
+  })();
+  </script>
+</body>
+</html>
