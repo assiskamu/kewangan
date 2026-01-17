@@ -18,6 +18,11 @@
       --pri:#2dd4bf; --pri2:#14b8a6; --shadow:0 10px 26px rgba(0,0,0,.35);
       --focus:rgba(45,212,191,.35);
     }
+    [data-theme="neutral"]{
+      --bg:#f3f4f6; --card:#ffffff; --text:#1f2937; --muted:#6b7280; --line:rgba(31,41,55,.14);
+      --pri:#0f766e; --pri2:#1f7a74; --shadow:0 10px 26px rgba(15,23,42,.10);
+      --focus:rgba(15,118,110,.32);
+    }
     [data-contrast="high"]{
       --bg:#000; --card:#0a0a0a; --text:#fff; --muted:#fff; --line:rgba(255,255,255,.35);
       --pri:#00ffcc; --pri2:#00d6ad; --danger:#ff4d4d; --warn:#ffd24d; --ok:#7cff7c;
@@ -162,11 +167,17 @@
     }
     .toast b{ font-weight:950; }
     .footer{ text-align:center; padding:18px 10px; color:var(--muted); font-weight:800; }
+    .print-header{ display:none; border:1px solid var(--line); border-radius:16px; padding:14px; margin-bottom:14px; }
+    .print-header h2{ margin:0 0 6px; font-size:1.1rem; font-weight:950; }
+    .print-header .meta{ margin-top:4px; }
+    .print-header .meta span{ display:inline-block; margin-right:10px; }
+    .print-only{ display:none; }
     @media print{
-      header,.nav,.toastWrap,.btn,.acc button{ display:none!important; }
+      header,.nav,.toastWrap,.btn,.acc button,.print-hide,input,select,textarea{ display:none!important; }
       body{ background:#fff!important; color:#000!important; }
       .wrap{ padding:0!important; max-width:none!important; }
       .card,.acc,table{ box-shadow:none!important; border:1px solid #ddd!important; }
+      .print-header,.print-only{ display:block!important; }
       .footer{ position:fixed; bottom:0; left:0; right:0; padding:8px 12px; font-size:12px; color:#333; border-top:1px solid #ddd; }
       a{ color:#000!important; }
     }
@@ -345,7 +356,7 @@
         <div class="card">
           <div class="card-h">
             <h2>Laporan</h2>
-            <div class="row">
+            <div class="row print-hide">
               <label class="field">
                 <span>Tempoh Laporan</span>
                 <select id="selPeriodRpt"></select>
@@ -354,6 +365,14 @@
             </div>
           </div>
           <div class="card-b">
+            <div class="print-header" id="printHeader">
+              <h2>Pencipta Penyata Kewangan Kelab</h2>
+              <div class="meta">
+                <span><b>Nama Kelab:</b> <span id="printClub">-</span></span>
+                <span><b>Tempoh:</b> <span id="printPeriod">-</span></span>
+                <span><b>Tarikh Cetak:</b> <span id="printDate">-</span></span>
+              </div>
+            </div>
             <div class="acc" id="accPL" data-open="yes">
               <button type="button" id="btnAccPL" aria-expanded="true">
                 <div>
@@ -412,6 +431,21 @@
 
             <div style="height:12px"></div>
 
+            <div class="acc" id="accMonthly" data-open="no">
+              <button type="button" id="btnAccMonthly" aria-expanded="false">
+                <div>
+                  <div>Pecahan Bulanan</div>
+                  <div class="sub">Ringkasan pendapatan & perbelanjaan mengikut bulan</div>
+                </div>
+                <span aria-hidden="true">›</span>
+              </button>
+              <div class="body">
+                <div id="monthlyTable"></div>
+              </div>
+            </div>
+
+            <div style="height:12px"></div>
+
             <div class="acc" id="accCompare" data-open="no">
               <button type="button" id="btnAccCompare" aria-expanded="false">
                 <div>
@@ -434,6 +468,12 @@
                   <b>Carta ringkas (Surplus/Defisit)</b>
                   <canvas id="cSur" height="160" style="width:100%"></canvas>
                   <div class="small">Carta guna label & corak (bukan warna sahaja).</div>
+                </div>
+                <div style="height:10px"></div>
+                <div class="item">
+                  <b>Carta 2: Pendapatan vs Perbelanjaan mengikut tempoh</b>
+                  <canvas id="cIncExp" height="200" style="width:100%"></canvas>
+                  <div class="small">Garis dan penanda berbeza + label nilai untuk mesra buta warna.</div>
                 </div>
               </div>
             </div>
@@ -477,7 +517,7 @@
                   </select>
                 </label>
                 <label class="field"><span>Tema</span>
-                  <select id="theme"><option value="light">Cerah</option><option value="dark">Gelap</option></select>
+                  <select id="theme"><option value="light">Cerah</option><option value="neutral">Neutral</option><option value="dark">Gelap</option></select>
                 </label>
               </div>
 
@@ -495,6 +535,7 @@
                   <div class="row">
                     <label class="row" style="gap:8px"><input type="checkbox" id="hiContrast"> <b>Kontras Tinggi</b></label>
                     <label class="row" style="gap:8px"><input type="checkbox" id="reduceMotion"> <b>Kurangkan Animasi</b></label>
+                    <label class="row" style="gap:8px"><input type="checkbox" id="colorBlind"> <b>Mesra Buta Warna</b></label>
                   </div>
                   <div style="height:10px"></div>
                   <div class="row">
@@ -554,6 +595,39 @@
                   </div>
                   <div style="height:10px"></div>
                   <div id="importPreview" class="help"></div>
+                </div>
+              </div>
+
+              <div style="height:12px"></div>
+
+              <div class="acc" id="accDownload" data-open="no">
+                <button type="button" id="btnAccDownload" aria-expanded="false">
+                  <div>
+                    <div>Sandaran & Muat Turun</div>
+                    <div class="sub">Apa yang dimuat turun dan bila perlu guna</div>
+                  </div>
+                  <span aria-hidden="true">›</span>
+                </button>
+                <div class="body">
+                  <ul style="margin:0; padding-left:18px">
+                    <li><b>Sandaran Penuh (JSON)</b>: Mengandungi semua tempoh, akaun, transaksi, dan tetapan. Gunakan apabila ingin pindahkan atau pulihkan semua data. Untuk import semula, pilih fail JSON di bahagian Import.</li>
+                    <li><b>Eksport Laporan (CSV)</b>: Mengandungi data mengikut jenis laporan. Sesuai untuk analisis lanjut. <b>Nota:</b> satu laporan = satu fail CSV.</li>
+                    <li><b>Cetak / Simpan PDF</b>: Gunakan dialog cetak pelayar dan pilih “Simpan sebagai PDF” untuk simpan salinan rasmi.</li>
+                  </ul>
+                  <div class="sep"></div>
+                  <p class="help" style="margin:0 0 10px">
+                    Contoh nama fail:
+                  </p>
+                  <ul style="margin:0; padding-left:18px">
+                    <li>sandaran-kelab-YYYY-MM-DD.json</li>
+                    <li>untung-rugi-&lt;label-tempoh&gt;.csv</li>
+                    <li>kedudukan-kewangan-&lt;label-tempoh&gt;.csv</li>
+                    <li>aliran-tunai-&lt;label-tempoh&gt;.csv</li>
+                    <li>perbandingan-multi-tahun.csv</li>
+                  </ul>
+                  <p class="help" style="margin-top:10px; margin-bottom:0">
+                    Data disimpan dalam peranti (localStorage). Sandaran JSON disyorkan secara berkala.
+                  </p>
                 </div>
               </div>
 
@@ -667,7 +741,7 @@
     <div class="toastWrap" id="toastWrap" aria-live="polite" aria-atomic="true"></div>
 
     <footer class="footer">
-      <span id="copyright">© 2026 Assis Kamu UMS. Hak cipta terpelihara.</span>
+      <span id="copyright"></span>
     </footer>
   </div>
 
@@ -894,7 +968,7 @@
         profile: { clubName:"Pencipta Penyata Kewangan Kelab", regNo:"", preparedBy:"", preparedRole:"" },
         settings: {
           simbol:"RM", perpuluhan:2,
-          theme:"light", hiContrast:false, reduceMotion:false, fontSize:"normal", tapSize:"normal",
+          theme:"light", hiContrast:false, reduceMotion:false, fontSize:"normal", tapSize:"normal", colorBlind:false,
           role:"Bendahari", advanced:false
         },
         currentPeriodId:"",
@@ -932,6 +1006,7 @@
       if(typeof s.reduceMotion !== "boolean") s.reduceMotion=false;
       if(!s.fontSize) s.fontSize="normal";
       if(!s.tapSize) s.tapSize="normal";
+      if(typeof s.colorBlind !== "boolean") s.colorBlind=false;
       if(!s.role) s.role="Bendahari";
       if(typeof s.advanced !== "boolean") s.advanced=false;
 
@@ -983,11 +1058,30 @@
       }
     }
 
+    function fmtDateTimeMY(ts){
+      try{
+        return new Intl.DateTimeFormat("ms-MY", {
+          dateStyle: "long",
+          timeStyle: "short"
+        }).format(new Date(ts));
+      }catch{
+        return new Date(ts).toLocaleString("ms-MY");
+      }
+    }
+
+    function setCopyright(){
+      const y = new Date().getFullYear();
+      const text = `© ${y} Assis Kamu UMS. Hak cipta terpelihara.`;
+      $("#copyright").textContent = text;
+    }
+
     /* ===== Theme/A11y apply ===== */
     function applyUX(){
-      document.documentElement.dataset.theme = DATA.settings.theme === "dark" ? "dark" : "light";
+      const theme = (DATA.settings.theme === "dark" || DATA.settings.theme === "neutral") ? DATA.settings.theme : "light";
+      document.documentElement.dataset.theme = theme;
       document.documentElement.dataset.contrast = DATA.settings.hiContrast ? "high" : "normal";
       document.documentElement.dataset.motion = DATA.settings.reduceMotion ? "reduced" : "normal";
+      document.documentElement.dataset.colorblind = DATA.settings.colorBlind ? "on" : "off";
       const font = DATA.settings.fontSize === "xbig" ? 19 : (DATA.settings.fontSize === "big" ? 17 : 16);
       document.documentElement.style.setProperty("--font", font + "px");
       const tap = DATA.settings.tapSize === "big" ? 54 : 44;
@@ -1375,6 +1469,83 @@
       ]));
     }
 
+    function renderMonthly(periodId){
+      const wrap = $("#monthlyTable");
+      wrap.innerHTML = "";
+      const p = getPeriod(periodId);
+      if(!p){
+        wrap.innerHTML = `<div class="help">Tiada data untuk pecahan bulanan.</div>`;
+        return;
+      }
+      const txns = txnsInPeriod(p.id);
+      if(!txns.length){
+        wrap.innerHTML = `<div class="help">Tiada data untuk pecahan bulanan.</div>`;
+        return;
+      }
+      const monthNames = ["Jan","Feb","Mac","Apr","Mei","Jun","Jul","Ogos","Sep","Okt","Nov","Dis"];
+      const start = new Date(p.start + "T00:00:00");
+      const end = new Date(p.end + "T00:00:00");
+      const multiYear = start.getFullYear() !== end.getFullYear();
+      const months = [];
+      const d = new Date(start.getFullYear(), start.getMonth(), 1);
+      while(d <= end){
+        const y = d.getFullYear();
+        const m = String(d.getMonth()+1).padStart(2,"0");
+        const label = multiYear ? `${monthNames[d.getMonth()]} ${y}` : monthNames[d.getMonth()];
+        months.push({key:`${y}-${m}`, label});
+        d.setMonth(d.getMonth()+1);
+      }
+      const map = new Map();
+      for(const t of txns){
+        const key = (t.date||"").slice(0,7);
+        if(!map.has(key)) map.set(key, {inc:0, exp:0});
+        const acct = getAcct(t.accountId);
+        if(acct?.type === "Pendapatan") map.get(key).inc += t.amount || 0;
+        if(acct?.type === "Perbelanjaan") map.get(key).exp += t.amount || 0;
+      }
+      const t = document.createElement("table");
+      t.innerHTML = `<thead><tr><th>Bulan</th><th class="right-align">Jumlah Pendapatan</th><th class="right-align">Jumlah Perbelanjaan</th><th class="right-align">Surplus/Defisit</th></tr></thead><tbody></tbody>`;
+      const tb = t.querySelector("tbody");
+      for(const m of months){
+        const v = map.get(m.key) || {inc:0, exp:0};
+        const net = v.inc - v.exp;
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td><b>${safe(m.label)}</b></td><td class="right-align">${fmtRM(v.inc)}</td><td class="right-align">${fmtRM(v.exp)}</td><td class="right-align">${fmtRM(net)}</td>`;
+        tb.appendChild(tr);
+      }
+      wrap.appendChild(t);
+    }
+
+    function updatePrintHeader(periodId){
+      const p = getPeriod(periodId);
+      $("#printClub").textContent = DATA.profile.clubName || "Kelab";
+      if(p){
+        $("#printPeriod").textContent = `${p.label} (${fmtDateMY(p.start)}–${fmtDateMY(p.end)})`;
+      }else{
+        $("#printPeriod").textContent = "Tiada tempoh laporan";
+      }
+      $("#printDate").textContent = fmtDateTimeMY(Date.now());
+    }
+
+    function preparePrint(){
+      const id = $("#selPeriodRpt").value || DATA.currentPeriodId;
+      const accs = [
+        {acc: $("#accPL"), btn: $("#btnAccPL")},
+        {acc: $("#accBS"), btn: $("#btnAccBS")},
+        {acc: $("#accCF"), btn: $("#btnAccCF")},
+        {acc: $("#accMonthly"), btn: $("#btnAccMonthly")},
+        {acc: $("#accCompare"), btn: $("#btnAccCompare")}
+      ];
+      accs.forEach(({acc, btn}) => {
+        if(!acc || !btn) return;
+        acc.dataset.open = "yes";
+        btn.setAttribute("aria-expanded","true");
+      });
+      renderReport();
+      updatePrintHeader(id);
+      setTimeout(()=>window.print(), 80);
+    }
+
     /* ===== Multi-year compare ===== */
     function renderCompare(){
       const pick = $("#cmpPick");
@@ -1419,6 +1590,7 @@
       if(ids.length < 2){
         table.innerHTML = `<div class="help">Sila pilih sekurang-kurangnya 2 tempoh untuk dibandingkan.</div>`;
         drawCompareChart([]);
+        drawCompareInExpChart([]);
         return;
       }
 
@@ -1467,6 +1639,7 @@
       }
 
       drawCompareChart(rows);
+      drawCompareInExpChart(rows);
     }
 
     function drawCompareChart(rows){
@@ -1491,6 +1664,7 @@
       const plotH = H - pad*2;
       const values = rows.map(r=>r.net);
       const maxAbs = Math.max(1, ...values.map(v=>Math.abs(v)));
+      const colorBlind = !!DATA.settings.colorBlind;
 
       // baseline 0
       const y0 = pad + plotH/2;
@@ -1517,22 +1691,107 @@
 
         // stripes pattern for accessibility
         ctx.strokeStyle = pri;
-        ctx.lineWidth = 1;
-        for(let yy=y; yy<y+h; yy+=6){
+        ctx.lineWidth = colorBlind ? 2 : 1;
+        const stripeGap = colorBlind ? 5 : 6;
+        for(let yy=y; yy<y+h; yy+=stripeGap){
           ctx.beginPath(); ctx.moveTo(x,yy); ctx.lineTo(x+barW,yy); ctx.stroke();
         }
-        ctx.lineWidth = 2;
+        ctx.lineWidth = colorBlind ? 3 : 2;
         ctx.strokeRect(x,y,barW,h);
 
         // label
         ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--text");
-        ctx.font = "11px system-ui";
+        ctx.font = colorBlind ? "12px system-ui" : "11px system-ui";
         ctx.fillText(fmtRM(v), x, v>=0 ? (y-6) : (y+h+14));
 
         ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--muted");
-        ctx.font = "11px system-ui";
+        ctx.font = colorBlind ? "12px system-ui" : "11px system-ui";
         ctx.fillText(rows[i].label, x, H-10);
       }
+    }
+
+    function drawCompareInExpChart(rows){
+      const c = $("#cIncExp");
+      const dpr = window.devicePixelRatio || 1;
+      c.width = c.clientWidth * dpr;
+      c.height = c.clientHeight * dpr;
+      const ctx = c.getContext("2d");
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+      const W = c.clientWidth, H = c.clientHeight;
+      ctx.clearRect(0,0,W,H);
+
+      if(!rows.length){
+        ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--muted");
+        ctx.font = "14px system-ui";
+        ctx.fillText("Tiada data untuk carta.", 12, 22);
+        return;
+      }
+
+      const colorBlind = !!DATA.settings.colorBlind;
+      const pad = 34;
+      const plotW = W - pad*2;
+      const plotH = H - pad*2;
+      const maxVal = Math.max(1, ...rows.flatMap(r=>[r.inc, r.exp]));
+
+      ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--line");
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(pad, pad); ctx.lineTo(pad, pad+plotH); ctx.lineTo(pad+plotW, pad+plotH); ctx.stroke();
+
+      const stepX = rows.length > 1 ? plotW/(rows.length-1) : plotW;
+      const mapY = (v) => pad + plotH - (v/maxVal)*plotH;
+
+      const textColor = getComputedStyle(document.documentElement).getPropertyValue("--text");
+      const pri = getComputedStyle(document.documentElement).getPropertyValue("--pri").trim() || "#0f766e";
+      const expColor = getComputedStyle(document.documentElement).getPropertyValue("--danger").trim() || "#b91c1c";
+
+      const drawLine = (vals, color, dashed) => {
+        ctx.strokeStyle = color;
+        ctx.lineWidth = colorBlind ? 3 : 2;
+        ctx.setLineDash(dashed ? [6,4] : []);
+        ctx.beginPath();
+        vals.forEach((v,i)=>{
+          const x = pad + stepX*i;
+          const y = mapY(v);
+          if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+        });
+        ctx.stroke();
+        ctx.setLineDash([]);
+      };
+
+      drawLine(rows.map(r=>r.inc), pri, false);
+      drawLine(rows.map(r=>r.exp), expColor, true);
+
+      rows.forEach((r,i)=>{
+        const x = pad + stepX*i;
+        const yInc = mapY(r.inc);
+        const yExp = mapY(r.exp);
+
+        ctx.fillStyle = pri;
+        ctx.beginPath(); ctx.arc(x, yInc, colorBlind ? 5 : 4, 0, Math.PI*2); ctx.fill();
+        ctx.strokeStyle = pri; ctx.lineWidth = colorBlind ? 2 : 1; ctx.stroke();
+
+        ctx.fillStyle = expColor;
+        const size = colorBlind ? 10 : 8;
+        ctx.fillRect(x - size/2, yExp - size/2, size, size);
+        ctx.strokeStyle = expColor; ctx.lineWidth = colorBlind ? 2 : 1; ctx.strokeRect(x - size/2, yExp - size/2, size, size);
+
+        ctx.fillStyle = textColor;
+        ctx.font = colorBlind ? "12px system-ui" : "11px system-ui";
+        ctx.fillText(fmtRM(r.inc), x + 6, yInc - 8);
+        ctx.fillText(fmtRM(r.exp), x + 6, yExp + 14);
+      });
+
+      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--muted");
+      ctx.font = colorBlind ? "12px system-ui" : "11px system-ui";
+      rows.forEach((r,i)=>{
+        const x = pad + stepX*i;
+        ctx.fillText(r.label, x - 6, H - 8);
+      });
+
+      ctx.fillStyle = textColor;
+      ctx.font = colorBlind ? "12px system-ui" : "11px system-ui";
+      ctx.fillText("Pendapatan (bulat) — Garis padu", pad, pad - 10);
+      ctx.fillText("Perbelanjaan (segi empat) — Garis putus-putus", pad, pad - (colorBlind ? 26 : 22));
     }
 
     function renderReport(){
@@ -1543,6 +1802,8 @@
       renderPL(id);
       renderBS(id);
       renderCF(id);
+      renderMonthly(id);
+      updatePrintHeader(id);
       renderCompare();
     }
 
@@ -1561,6 +1822,7 @@
       $("#theme").value = DATA.settings.theme || "light";
       $("#hiContrast").checked = !!DATA.settings.hiContrast;
       $("#reduceMotion").checked = !!DATA.settings.reduceMotion;
+      $("#colorBlind").checked = !!DATA.settings.colorBlind;
       $("#fontSize").value = DATA.settings.fontSize || "normal";
       $("#tapSize").value = DATA.settings.tapSize || "normal";
       $("#togAdvanced").checked = !!DATA.settings.advanced;
@@ -2323,6 +2585,7 @@
 
     /* ===== Render all ===== */
     function renderAll(){
+      setCopyright();
       applyUX();
       fillPeriodSelect($("#selPeriodHome"));
       fillPeriodSelect($("#selPeriodTxn"));
@@ -2378,10 +2641,11 @@
 
     // Report
     $("#selPeriodRpt").addEventListener("change", (e)=>{ DATA.currentPeriodId = e.target.value; markDirty(); renderAll(); });
-    $("#btnPrint").addEventListener("click", ()=>window.print());
+    $("#btnPrint").addEventListener("click", preparePrint);
     $("#btnAccPL").addEventListener("click", ()=>toggleAcc($("#accPL"), $("#btnAccPL")));
     $("#btnAccBS").addEventListener("click", ()=>toggleAcc($("#accBS"), $("#btnAccBS")));
     $("#btnAccCF").addEventListener("click", ()=>toggleAcc($("#accCF"), $("#btnAccCF")));
+    $("#btnAccMonthly").addEventListener("click", ()=>toggleAcc($("#accMonthly"), $("#btnAccMonthly")));
     $("#btnAccCompare").addEventListener("click", ()=>toggleAcc($("#accCompare"), $("#btnAccCompare")));
     $("#btnCsvPL").addEventListener("click", ()=>exportPLCSV($("#selPeriodRpt").value || DATA.currentPeriodId));
     $("#btnCsvBS").addEventListener("click", ()=>exportBSCsv($("#selPeriodRpt").value || DATA.currentPeriodId));
@@ -2392,6 +2656,7 @@
     // Settings accordions
     $("#btnAccA11y").addEventListener("click", ()=>toggleAcc($("#accA11y"), $("#btnAccA11y")));
     $("#btnAccBackup").addEventListener("click", ()=>toggleAcc($("#accBackup"), $("#btnAccBackup")));
+    $("#btnAccDownload").addEventListener("click", ()=>toggleAcc($("#accDownload"), $("#btnAccDownload")));
     $("#btnAccAdvanced").addEventListener("click", ()=>toggleAcc($("#accAdvanced"), $("#btnAccAdvanced")));
     $("#btnAccHelp").addEventListener("click", ()=>toggleAcc($("#accHelp"), $("#btnAccHelp")));
     $("#btnAccPeriods").addEventListener("click", ()=>toggleAcc($("#accPeriods"), $("#btnAccPeriods")));
@@ -2413,6 +2678,7 @@
     bindSetting($("#theme"), () => DATA.settings.theme = $("#theme").value);
     bindSetting($("#hiContrast"), () => DATA.settings.hiContrast = $("#hiContrast").checked);
     bindSetting($("#reduceMotion"), () => DATA.settings.reduceMotion = $("#reduceMotion").checked);
+    bindSetting($("#colorBlind"), () => DATA.settings.colorBlind = $("#colorBlind").checked);
     bindSetting($("#fontSize"), () => DATA.settings.fontSize = $("#fontSize").value);
     bindSetting($("#tapSize"), () => DATA.settings.tapSize = $("#tapSize").value);
 
@@ -2459,15 +2725,6 @@
     // Reset dialog
     $("#btnCloseReset").addEventListener("click", ()=>$("#dlgReset").close());
     $("#btnConfirmReset").addEventListener("click", confirmReset);
-
-    // Period select sync across pages
-    ["selPeriodHome","selPeriodTxn","selPeriodRpt"].forEach(id => {
-      $("#"+id).addEventListener("change", (e)=>{
-        DATA.currentPeriodId = e.target.value;
-        markDirty();
-        renderAll();
-      });
-    });
 
     // Initial
     setSaveStatus("ok","Disimpan");
